@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "609828610487",
+    "project_id": "proyecto-final-javi",
+    "storage_bucket": "proyecto-final-javi.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:609828610487:android:dd9d1e2f7269ed0c934832",
+        "android_client_info": {
+          "package_name": "com.example.proyecto_final_javig"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDhh756buFe-2Nrjd1yhzCQ23HeWDXMJpg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

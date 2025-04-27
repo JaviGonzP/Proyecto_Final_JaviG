@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Proyecto_Final_JaviG</string>
+
+    <!--Bottom Navigation Names-->
+    <string name="inicio">Inicio</string>
+    <string name="lista">Lista</string>
+    <string name="ajustes">Ajustes</string>
+    <string name="perfil">Perfil</string>
+    <string name="contacto">Contacto</string>
+</resources>
