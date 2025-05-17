@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.proyecto_final_javig.properties.NavDrawer
+import com.example.proyecto_final_javig.screens.Admin
 import com.example.proyecto_final_javig.screens.Ajustes
 import com.example.proyecto_final_javig.screens.Contacto
 import com.example.proyecto_final_javig.screens.InteriorLista
@@ -35,6 +36,10 @@ fun ScreenNavInicio(navController: NavHostController) {
 
         composable(Screens.SignUp.route) {
             SignUp(navController)
+        }
+
+        composable(Screens.Admin.route) {
+           Admin(navController)
         }
 
     }

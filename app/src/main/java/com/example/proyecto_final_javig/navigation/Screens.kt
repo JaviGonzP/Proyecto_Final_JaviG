@@ -15,6 +15,7 @@ sealed class Screens(
     object Mapa : Screens("mapa")
     object Contacto : Screens("contacto")
     object Scanner : Screens("scanner")
+    object Admin : Screens("admin")
 
     //Pasar id en la card
     object InteriorLista : Screens("interior_lista/{$DETAIL_ARGUMENT_KEY}") {
