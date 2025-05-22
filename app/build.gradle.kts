@@ -81,6 +81,7 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("androidx.ink:ink-geometry-android:1.0.0-alpha01")
+    implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.3")
 
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
@@ -94,6 +95,8 @@ dependencies {
 
     //Firebase
     implementation(platform("com.google.firebase:firebase-bom:32.7.2"))
+    implementation("com.google.firebase:firebase-functions-ktx:20.4.0") // Functions
+
 
     //Maps
     implementation("com.google.maps.android:maps-compose:2.11.4")
@@ -110,7 +113,7 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // Corrutinas para llamadas en segundo plano
+    // Coroutines para llamadas en segundo plano
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4")
 
     // Gson para manejar JSON

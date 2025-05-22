@@ -22,3 +22,10 @@ data class User(
         )
     }
 }
+
+data class Lista(
+    val id_user: String = "",
+    val id_compartir: String = "",
+    val nombre_lista: String = "",
+    val id_lista: String = ""
+)

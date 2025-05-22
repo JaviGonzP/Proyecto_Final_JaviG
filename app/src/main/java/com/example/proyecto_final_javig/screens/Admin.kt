@@ -1,8 +1,10 @@
 package com.example.proyecto_final_javig.screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -24,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.proyecto_final_javig.model.User
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.functions.FirebaseFunctions
 
 @Composable
 fun Admin(navController: NavController) {
@@ -43,10 +46,17 @@ fun Admin(navController: NavController) {
     }
 
     LazyColumn {
-        items(users){ user ->
+        //key para evitar que los usuarios se mezclen
+        items(users, key = { it.user_id}){ user ->
             UserItem(user,
-                onDelete = { deleteUser(user) },
-                onEdit = { updatedFields -> updateUser(user.user_id, updatedFields)}
+                onDelete = {
+                    deleteUser(user)
+                    users.remove(user)
+                           },
+                onEdit = { updatedFields -> updateUser(user.user_id, updatedFields)},
+                onViewLists = {
+                    navController.navigate("usersAdmin/${user.user_id}")
+                }
             )
         }
     }
@@ -54,7 +64,12 @@ fun Admin(navController: NavController) {
 }
 
 @Composable
-fun UserItem(user: User, onDelete: () -> Unit, onEdit: (Map<String, Any>) -> Unit){
+fun UserItem(
+    user: User,
+    onDelete: () -> Unit,
+    onEdit: (Map<String, Any>) -> Unit,
+    onViewLists: () -> Unit
+    ){
     var nombre by remember { mutableStateOf(user.nombre)}
     var apellido by remember { mutableStateOf(user.apellido) }
 
@@ -74,8 +89,11 @@ fun UserItem(user: User, onDelete: () -> Unit, onEdit: (Map<String, Any>) -> Uni
         Button(onClick = { onDelete() }, colors = ButtonDefaults.buttonColors(Color.Red)){
             Text("Eliminar")
         }
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = onViewLists) {
+            Text("Ver listas")
+        }
     }
-
 }
 
 fun updateUser(userId: String, updates: Map<String, Any>){
@@ -89,12 +107,46 @@ fun updateUser(userId: String, updates: Map<String, Any>){
         }
 }
 
-fun deleteUser(user: User){
-    val db = FirebaseFirestore.getInstance()
-    db.collection("users")
-        .whereEqualTo("user_id", user.user_id)
-        .get()
-        .addOnSuccessListener { snapshot ->
-            snapshot.documents.firstOrNull()?.reference?.delete()
+//fun deleteUser(user: User){
+//    val db = FirebaseFirestore.getInstance()
+//    val functions = FirebaseFunctions.getInstance()
+//
+//    db.collection("users")
+//        .whereEqualTo("user_id", user.user_id)
+//        .get()
+//        .addOnSuccessListener { snapshot ->
+//            snapshot.documents.firstOrNull()?.reference?.delete()
+//
+//            val data = hashMapOf("uid" to user.user_id)
+//            functions
+//                .getHttpsCallable("deleteUser")
+//                .call(data)
+//                .addOnSuccessListener {
+//                    Log.d("Admin", "Usuario eliminado del Auth correctamente")
+//                }
+//                .addOnFailureListener { e ->
+//                    Log.e("Admin", "Error eliminando usuario del Auth", e)
+//                }
+//        }
+//        .addOnFailureListener { e ->
+//            Log.e("Admin", "Error eliminando usuario de Firestore", e)
+//        }
+//}
+
+data class DeleteUserRequest(val uid: String)
+
+fun deleteUser(user: User) {
+    val uid = user.user_id ?: return
+    val request = DeleteUserRequest(uid)
+
+    FirebaseFunctions.getInstance()
+        .getHttpsCallable("deleteUser")
+        .call(request)
+        .addOnSuccessListener { result ->
+            val res = result.data as Map<*, *>
+            Log.d("Admin", "✅ Función ejecutada: ${res["message"]}")
+        }
+        .addOnFailureListener { e ->
+            Log.e("Admin", "❌ Error al llamar a la función: ${e.message}")
         }
 }

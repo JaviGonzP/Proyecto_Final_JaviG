@@ -98,8 +98,9 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
 }
 
 data class Producto(
-    val producto: String,
-    val cantidad: String
+    val nombre_producto: String = "",
+    val id_lista: String = "",
+    val documentId: String = ""
 )
 
 val productos = mutableStateListOf<Producto>()
