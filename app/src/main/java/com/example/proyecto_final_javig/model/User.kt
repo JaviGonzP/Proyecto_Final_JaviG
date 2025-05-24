@@ -7,7 +7,8 @@ data class User(
     val nombre: String = "",
     val apellido: String = "",
     val avatarUrl: String = "",
-    var id_compartir: List<String> = emptyList()
+    var id_compartir: List<String> = emptyList(),
+    val admin: Boolean = false
 ){
     fun toMap(): MutableMap<String, Any>{
         return mutableMapOf(
@@ -16,7 +17,15 @@ data class User(
             "nombre" to this.nombre,
             "apellido" to this.apellido,
             "avatar_url" to this.avatarUrl,
-            "id_compartir" to this.id_compartir
+            "id_compartir" to this.id_compartir,
+            "admin" to this.admin
         )
     }
 }
+
+data class Lista(
+    val id_user: String = "",
+    val id_compartir: String = "",
+    val nombre_lista: String = "",
+    val id_lista: String = ""
+)

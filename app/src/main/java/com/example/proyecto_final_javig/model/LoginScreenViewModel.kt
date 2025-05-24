@@ -2,14 +2,6 @@ package com.example.proyecto_final_javig.model
 
 
 import android.util.Log
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,7 +10,6 @@ import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.ktx.Firebase
-
 import kotlinx.coroutines.launch
 
 class LoginScreenViewModel : ViewModel() {
@@ -26,14 +17,29 @@ class LoginScreenViewModel : ViewModel() {
     private val _loading = MutableLiveData(false)
     var userIncorr = false
 
-    fun signInWithEmailAndPassword(email: String, password: String, home: () -> Unit) =
+    fun signInWithEmailAndPassword(email: String, password: String, onNavigate: (Boolean) -> Unit) =
         viewModelScope.launch {
             try {
                 auth.signInWithEmailAndPassword(email, password)
                     .addOnCompleteListener { task ->
                         if (task.isSuccessful) {
-                            Log.d("Showboxd", "signInWithEmailAndPassword logged!!")
-                            home()
+                            val userId = auth.currentUser?.uid ?: return@addOnCompleteListener
+
+                            FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .whereEqualTo("user_id", userId)
+                                .get()
+                                .addOnSuccessListener { documents ->
+                                    val isAdmin = documents.firstOrNull()
+                                        ?.getBoolean("admin") ?: false
+
+                                    onNavigate(isAdmin)
+                                }
+                                .addOnFailureListener {
+                                    Log.d("Showboxd", "Error obteniendo datos del usuario")
+                                    onNavigate(false) // Por defecto ir usuario normal
+                                }
+
                         } else {
                             val exception = task.exception
                             if (exception is FirebaseAuthInvalidCredentialsException) {
@@ -96,7 +102,8 @@ class LoginScreenViewModel : ViewModel() {
             nombre = nombre.toString(),
             apellido = apellido.toString(),
             avatarUrl = "https://cdn.icon-icons.com/icons2/3946/PNG/512/user_icon_250929.png",
-            id_compartir = emptyList()
+            id_compartir = emptyList(),
+            admin = false
         ).toMap()
 
         FirebaseFirestore.getInstance().collection("users")

@@ -21,6 +21,8 @@ val gris = Color(0xFF5C6174)
 val fondo_azul = Color(0xFFe4edf4)
 val fondo_rosa = Color(0xFFD6E3EC)
 
+//COLOR DE ALTO CONTRASTE EN EL QUE TENERLO CON LA OPACIDAD AL 0 PARA CAMBIARLO AL 100
+val color_contraste = Color(0x00F6DC69)
 
 val texto_blanco = Color(0xFFFFFFFF)
 val texto_negro = Color(0xBC242222)

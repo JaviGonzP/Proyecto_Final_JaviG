@@ -322,7 +322,7 @@ fun MostrarProducto(producto: Producto) {
     ) {
         Text(
             color = Color.Black,
-            text = "${producto.cantidad} de ${producto.producto}",
+            text = "${producto.id_lista} de ${producto.nombre_producto}",
             fontSize = 20.sp,
             modifier = Modifier
                 .padding(top = 6.dp, bottom = 6.dp)

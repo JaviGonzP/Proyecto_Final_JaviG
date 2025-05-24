@@ -87,7 +87,7 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
                 )
                 .run {if (showDialog) blur(8.dp) else this}
         ) {
-
+            //Barra(navController,showDialog = {showDialog = it})
             Listas2(navController)
         }
 
@@ -98,8 +98,9 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
 }
 
 data class Producto(
-    val producto: String,
-    val cantidad: String
+    val nombre_producto: String = "",
+    val id_lista: String = "",
+    val documentId: String = ""
 )
 
 val productos = mutableStateListOf<Producto>()
@@ -174,7 +175,7 @@ fun Listas2(
                             )
                         )
                         IconButton(
-                            onClick = {
+                            onClick = { 
                                 userViewModel.agregarIdCompartir(id_compartir_lis)
                                 id_compartir_lis = ""
                             },
@@ -207,6 +208,7 @@ fun Listas2(
                             .fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
+
                         // Muestra las listas propias o un mensaje si no hay resultados
                         Box(
                             modifier = Modifier

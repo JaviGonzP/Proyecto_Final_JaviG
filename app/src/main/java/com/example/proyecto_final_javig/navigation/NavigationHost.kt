@@ -10,6 +10,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.proyecto_final_javig.properties.NavDrawer
+import com.example.proyecto_final_javig.screens.Admin
 import com.example.proyecto_final_javig.screens.Ajustes
 import com.example.proyecto_final_javig.screens.Contacto
 import com.example.proyecto_final_javig.screens.InteriorLista
@@ -18,6 +19,7 @@ import com.example.proyecto_final_javig.screens.MapsScreen
 import com.example.proyecto_final_javig.screens.Principal
 import com.example.proyecto_final_javig.screens.Scanner
 import com.example.proyecto_final_javig.screens.SignUp
+import com.example.proyecto_final_javig.screens.UsersAdmin
 
 @Composable
 @RequiresApi(Build.VERSION_CODES.O)
@@ -37,6 +39,13 @@ fun ScreenNavInicio(navController: NavHostController) {
             SignUp(navController)
         }
 
+        composable(Screens.Admin.route) {
+           Admin(navController)
+        }
+        composable("usersAdmin/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            UsersAdmin(userId)
+        }
     }
 }
 

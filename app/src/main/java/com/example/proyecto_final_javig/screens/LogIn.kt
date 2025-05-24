@@ -212,8 +212,10 @@ fun IniSesion(navController : NavController,
                         if (username.value.isNotEmpty() && password.value.isNotEmpty()) {
                             // Ir a la siguiente pantalla
                             Log.d("Lista Maestra", "Entrando con $username y $password")
-                                viewModel.signInWithEmailAndPassword(username.value, password.value){
-                                    navController.navigate(Screens.HomeContainer.route) {
+                                viewModel.signInWithEmailAndPassword(username.value, password.value){ isAdmin ->
+                                    navController.navigate(
+                                        if(isAdmin) Screens.Admin.route else Screens.HomeContainer.route
+                                    ) {
                                         popUpTo(Screens.LogIn.route) {
                                             inclusive = true
                                         }
