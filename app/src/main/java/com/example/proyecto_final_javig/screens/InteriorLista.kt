@@ -1,5 +1,6 @@
 package com.example.proyecto_final_javig.screens
 
+import android.annotation.SuppressLint
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
@@ -87,6 +88,7 @@ fun InteriorLista(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .padding(top = 20.dp)
                 .background(
                     brush = Brush.verticalGradient(
                         colors = listOf(
@@ -210,6 +212,7 @@ fun InteriorLista(
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun ShareDialog(
     firestore: FirebaseFirestore,

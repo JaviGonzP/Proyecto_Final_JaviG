@@ -22,6 +22,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Save
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -124,14 +125,14 @@ fun UsersAdmin(userId: String) {
                                     showNombreActualizado = true
                                 }
                         }) {
-                            Text("💾")
+                            Icon(Icons.Default.Save, contentDescription = "Editar")
                         }
                         Spacer(Modifier.width(8.dp))
                         Button(
                             onClick = { showConfirmDelete = true },
                             colors = ButtonDefaults.buttonColors(Color.Red)
                         ) {
-                            Text("🗑️")
+                            Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.White)
                         }
                     }
 

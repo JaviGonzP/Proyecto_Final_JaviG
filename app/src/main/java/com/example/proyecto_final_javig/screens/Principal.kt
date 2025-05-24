@@ -87,7 +87,7 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
                 )
                 .run {if (showDialog) blur(8.dp) else this}
         ) {
-
+            //Barra(navController,showDialog = {showDialog = it})
             Listas2(navController)
         }
 
@@ -175,7 +175,7 @@ fun Listas2(
                             )
                         )
                         IconButton(
-                            onClick = {
+                            onClick = { 
                                 userViewModel.agregarIdCompartir(id_compartir_lis)
                                 id_compartir_lis = ""
                             },
@@ -208,6 +208,7 @@ fun Listas2(
                             .fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
+
                         // Muestra las listas propias o un mensaje si no hay resultados
                         Box(
                             modifier = Modifier
