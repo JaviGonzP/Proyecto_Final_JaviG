@@ -14,7 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -219,7 +220,7 @@ fun CrearCuenta(
                     IconButton(
                         onClick = { PasswordVisible1 = !PasswordVisible1 }
                     ) {
-                        val icon = if (PasswordVisible1) Icons.Default.Info else Icons.Default.Info
+                        val icon = if (PasswordVisible1) Icons.Default.Visibility else Icons.Default.VisibilityOff
                         Icon(icon, contentDescription = "Toggle password visibility")
                     }
                 },
@@ -248,7 +249,7 @@ fun CrearCuenta(
                     IconButton(
                         onClick = { PasswordVisible2 = !PasswordVisible2 }
                     ) {
-                        val icon = if (PasswordVisible2) Icons.Default.Info else Icons.Default.Info
+                        val icon = if (PasswordVisible2) Icons.Default.Visibility else Icons.Default.VisibilityOff
                         Icon(icon, contentDescription = "Toggle password visibility")
                     }
                 },
