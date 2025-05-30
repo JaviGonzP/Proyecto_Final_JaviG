@@ -3,8 +3,11 @@ package com.example.proyecto_final_javig.screens
 import android.annotation.SuppressLint
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
@@ -23,12 +26,20 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
@@ -40,6 +51,7 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.shadow
@@ -47,12 +59,17 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyecto_final_javig.model.DataViewModel
+import com.example.proyecto_final_javig.model.ListaItems
+import com.example.proyecto_final_javig.model.ProductosItems
 import com.example.proyecto_final_javig.model.UserViewModel
+import com.example.proyecto_final_javig.model.deleteLista
+import com.example.proyecto_final_javig.navigation.Screens
 import com.example.proyecto_final_javig.ui.theme.blanco
 import com.example.proyecto_final_javig.ui.theme.fondo_azul
 import com.example.proyecto_final_javig.ui.theme.fondo_rosa
@@ -67,40 +84,72 @@ import kotlin.random.Random
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Principal(navController: NavController, userViewModel: UserViewModel = viewModel()) {
-    var showDialog by remember { mutableStateOf(false) }
+    var showAddDialog by remember { mutableStateOf(false) }
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var listaToDelete by remember { mutableStateOf<ListaItems?>(null) }
 
-
-    Box(modifier = Modifier.fillMaxSize()){
-
-        //Barra(navController, showDialog = {showDialog = it})
+    Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .padding(top = 60.dp)
+                // ← aquí uso showDeleteDialog para el blur
+                .blur(if (showAddDialog || showDeleteDialog) 8.dp else 0.dp)
                 .fillMaxHeight()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            fondo_azul,
-                            fondo_rosa
-                        )
-                    )
+                    brush = Brush.verticalGradient(listOf(fondo_azul, fondo_rosa))
                 )
-                .run {if (showDialog) blur(8.dp) else this}
         ) {
-            //Barra(navController,showDialog = {showDialog = it})
-            Listas2(navController)
+            Listas2(
+                navController,
+                onRequestDelete = { lista ->
+                    listaToDelete = lista
+                    showDeleteDialog = true
+                }
+            )
         }
 
-        if (showDialog){
-            AddListDialog(onDismiss = { showDialog = false })
+        // Diálogo de “añadir lista”
+        if (showAddDialog) {
+            AddListDialog(onDismiss = { showAddDialog = false })
+        }
+
+        // Diálogo de confirmación de borrado global
+        if (showDeleteDialog && listaToDelete != null) {
+            AlertDialog(
+                onDismissRequest = {
+                    showDeleteDialog = false
+                    listaToDelete = null
+                },
+                title = { Text("¿Eliminar lista?") },
+                text = { Text("Se eliminarán también sus productos. ¿Continuar?") },
+                confirmButton = {
+                    TextButton(onClick = {
+                        deleteLista(listaToDelete!!.id_lista)
+                        showDeleteDialog = false
+                        listaToDelete = null
+                    }) {
+                        Text("Eliminar", color = Color.Red)
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showDeleteDialog = false
+                        listaToDelete = null
+                    }) {
+                        Text("Cancelar")
+                    }
+                }
+            )
         }
     }
 }
 
+
 data class Producto(
     val nombre_producto: String = "",
     val id_lista: String = "",
-    val documentId: String = ""
+    val documentId: String = "",
+    var isChecked: Boolean = false
 )
 
 val productos = mutableStateListOf<Producto>()
@@ -111,7 +160,8 @@ val productos = mutableStateListOf<Producto>()
 fun Listas2(
     navController: NavController,
     dataViewModel: DataViewModel = viewModel(),
-    userViewModel: UserViewModel = viewModel()
+    userViewModel: UserViewModel = viewModel(),
+    onRequestDelete: (ListaItems) -> Unit
 ) {
     //Variables
     var id_compartir_lis by remember { mutableStateOf("") }
@@ -175,7 +225,7 @@ fun Listas2(
                             )
                         )
                         IconButton(
-                            onClick = { 
+                            onClick = {
                                 userViewModel.agregarIdCompartir(id_compartir_lis)
                                 id_compartir_lis = ""
                             },
@@ -216,36 +266,50 @@ fun Listas2(
                                 .background(Color.Transparent)
                         ) {
                             LazyColumn(
-                                contentPadding = PaddingValues(2.dp),
-                                verticalArrangement = Arrangement.spacedBy(10.dp)
+                                contentPadding = PaddingValues(vertical = 8.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp),
+                                modifier = Modifier.fillMaxHeight()
                             ) {
-                                items(misListas) { item ->
-                                    CardLista(
-                                        nombre_lista = item.nombre_lista,
-                                        nombre_sitio = item.nombre_sitio,
-                                        id_lista = item.id_lista,
-                                        id_compartir = item.id_compartir,
-                                        id_user = item.id_user,
-                                        navController = navController,
-                                        esCompartida = false,
-                                        setDialogOpen = { dialogOpen = it }
+                                items(misListas, key = { it.id_lista }) { lista ->
+                                    // extrae productos para esta lista:
+                                    val productosEstaLista = dataViewModel.stateP.value
+                                        .filter { it.id_lista == lista.id_lista }
+
+                                    ListCard(
+                                        lista = lista,
+                                        productos = productosEstaLista,
+                                        onEdit = {
+                                            navController.navigate(route = Screens.InteriorLista.passId(lista.id_lista))
+                                        },
+                                        onDelete = {
+                                            onRequestDelete(lista)
+                                        },
+                                        onToggleProduct = { producto ->
+                                            // alterna comprado en Firestore
+                                            toggleProductoComprado(producto)
+                                        }
                                     )
                                 }
-                                items(listasCompartidas) { item ->
-                                    CardLista(
-                                        nombre_lista = item.nombre_lista,
-                                        nombre_sitio = item.nombre_sitio,
-                                        id_lista = item.id_lista,
-                                        id_compartir = item.id_compartir,
-                                        id_user = item.id_user,
-                                        navController = navController,
-                                        esCompartida = true,
-                                        setDialogOpen = { dialogOpen = it }
+                                items(listasCompartidas, key = { it.id_lista }) { lista ->
+                                    val productosEstaLista = dataViewModel.stateP.value
+                                        .filter { it.id_lista == lista.id_lista }
+
+                                    ListCard(
+                                        lista = lista,
+                                        productos = productosEstaLista,
+                                        onEdit = {
+                                            navController.navigate(route = Screens.InteriorLista.passId(lista.id_lista))
+                                        },
+                                        onDelete = {
+                                            deleteLista(lista.id_lista)
+                                        },
+                                        onToggleProduct = { producto ->
+                                            toggleProductoComprado(producto)
+                                        }
                                     )
                                 }
                             }
                         }
-
                     }
                 }
             }
@@ -253,6 +317,101 @@ fun Listas2(
     }
 }
 
+fun toggleProductoComprado(producto: ProductosItems) {
+    val nueva = !producto.comprado
+    FirebaseFirestore.getInstance()
+        .collection("productos")
+        .document(producto.documentId)
+        .update("comprado", nueva)
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ListCard(
+    lista: ListaItems,
+    productos: List<ProductosItems>,
+    onEdit: () -> Unit,
+    onDelete: () -> Unit,
+    onToggleProduct: (ProductosItems) -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Surface(
+        tonalElevation = 4.dp,
+        shape = RoundedCornerShape(8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 4.dp)
+            .clickable { expanded = !expanded }
+            .animateContentSize()
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            // Cabecera: nombre + botones
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(
+                    text = lista.nombre_lista,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontSize = 18.sp,
+                    modifier = Modifier.weight(1f)
+                )
+                IconButton(onClick = onEdit) {
+                    Icon(Icons.Default.Edit, contentDescription = "Editar lista")
+                }
+                IconButton(onClick = onDelete) {
+                    Icon(
+                        Icons.Default.Delete,
+                        contentDescription = "Borrar lista",
+                        tint = Color.Red
+                    )
+                }
+            }
+
+            // Detalle de productos
+            AnimatedVisibility(expanded) {
+                Column(modifier = Modifier.padding(top = 8.dp)) {
+                    productos.forEach { producto ->
+                        ProductRow(
+                            producto = producto,
+                            onToggle = { onToggleProduct(producto) }
+                        )
+                        Divider(modifier = Modifier.padding(vertical = 4.dp))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun ProductRow(
+    producto: ProductosItems,
+    onToggle: () -> Unit
+) {
+    var checked by remember { mutableStateOf(producto.comprado) }
+
+    Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier
+            .fillMaxWidth()
+    ) {
+        Checkbox(
+            checked = checked,
+            onCheckedChange = {
+                checked = it
+                onToggle()
+            }
+        )
+        Spacer(Modifier.width(8.dp))
+        Text(
+            text = producto.nombre_producto,
+            style = MaterialTheme.typography.bodyLarge,
+            textDecoration = if (checked) TextDecoration.LineThrough else TextDecoration.None
+        )
+    }
+}
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
