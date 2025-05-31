@@ -28,9 +28,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -99,6 +101,22 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
                     brush = Brush.verticalGradient(listOf(fondo_azul, fondo_rosa))
                 )
         ) {
+            Button(
+                onClick = {
+                    showAddDialog = true
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Camera,
+                    contentDescription = "Lista",
+                    modifier = Modifier.size(20.dp)
+                )
+                Spacer(Modifier.width(8.dp))
+                Text("Crear nueva lista")
+            }
             Listas2(
                 navController,
                 onRequestDelete = { lista ->
@@ -270,43 +288,73 @@ fun Listas2(
                                 verticalArrangement = Arrangement.spacedBy(8.dp),
                                 modifier = Modifier.fillMaxHeight()
                             ) {
-                                items(misListas, key = { it.id_lista }) { lista ->
-                                    // extrae productos para esta lista:
-                                    val productosEstaLista = dataViewModel.stateP.value
-                                        .filter { it.id_lista == lista.id_lista }
-
-                                    ListCard(
-                                        lista = lista,
-                                        productos = productosEstaLista,
-                                        onEdit = {
-                                            navController.navigate(route = Screens.InteriorLista.passId(lista.id_lista))
-                                        },
-                                        onDelete = {
-                                            onRequestDelete(lista)
-                                        },
-                                        onToggleProduct = { producto ->
-                                            // alterna comprado en Firestore
-                                            toggleProductoComprado(producto)
-                                        }
+                                // ——— Sección 1: MIS LISTAS ———
+                                item {
+                                    Text(
+                                        text = "Mis listas",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                                     )
                                 }
-                                items(listasCompartidas, key = { it.id_lista }) { lista ->
-                                    val productosEstaLista = dataViewModel.stateP.value
-                                        .filter { it.id_lista == lista.id_lista }
+                                if (misListas.isEmpty()) {
+                                    item {
+                                        Text(
+                                            text = "No tienes listas propias",
+                                            modifier = Modifier.padding(start = 16.dp)
+                                        )
+                                    }
+                                } else {
+                                    items(misListas, key = { it.id_lista }) { lista ->
+                                        val productosEstaLista = dataViewModel.stateP.value
+                                            .filter { it.id_lista == lista.id_lista }
+                                        ListCard(
+                                            lista = lista,
+                                            productos = productosEstaLista,
+                                            isShared = false,
+                                            onEdit = {
+                                                navController.navigate(Screens.InteriorLista.passId(lista.id_lista))
+                                            },
+                                            onDelete = { onRequestDelete(lista) },
+                                            onToggleProduct = { producto ->
+                                                toggleProductoComprado(producto)
+                                            }
+                                        )
+                                    }
+                                }
 
-                                    ListCard(
-                                        lista = lista,
-                                        productos = productosEstaLista,
-                                        onEdit = {
-                                            navController.navigate(route = Screens.InteriorLista.passId(lista.id_lista))
-                                        },
-                                        onDelete = {
-                                            deleteLista(lista.id_lista)
-                                        },
-                                        onToggleProduct = { producto ->
-                                            toggleProductoComprado(producto)
-                                        }
+                                // ——— Sección 2: LISTAS COMPARTIDAS ———
+                                item {
+                                    Spacer(Modifier.height(16.dp))
+                                    Text(
+                                        text = "Listas compartidas",
+                                        style = MaterialTheme.typography.titleLarge,
+                                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                                     )
+                                }
+                                if (listasCompartidas.isEmpty()) {
+                                    item {
+                                        Text(
+                                            text = "No tienes listas compartidas",
+                                            modifier = Modifier.padding(start = 16.dp)
+                                        )
+                                    }
+                                } else {
+                                    items(listasCompartidas, key = { it.id_lista }) { lista ->
+                                        val productosEstaLista = dataViewModel.stateP.value
+                                            .filter { it.id_lista == lista.id_lista }
+                                        ListCard(
+                                            lista = lista,
+                                            productos = productosEstaLista,
+                                            isShared = true,
+                                            onEdit = {
+                                                navController.navigate(Screens.InteriorLista.passId(lista.id_lista))
+                                            },
+                                            onDelete = { onRequestDelete(lista) },
+                                            onToggleProduct = { producto ->
+                                                toggleProductoComprado(producto)
+                                            }
+                                        )
+                                    }
                                 }
                             }
                         }
@@ -330,23 +378,26 @@ fun toggleProductoComprado(producto: ProductosItems) {
 fun ListCard(
     lista: ListaItems,
     productos: List<ProductosItems>,
+    isShared: Boolean,
     onEdit: () -> Unit,
     onDelete: () -> Unit,
     onToggleProduct: (ProductosItems) -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
+    val bgColor = if (isShared) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
+
     Surface(
         tonalElevation = 4.dp,
         shape = RoundedCornerShape(8.dp),
+        color = bgColor,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp)
+            .padding(horizontal = 16.dp)
             .clickable { expanded = !expanded }
             .animateContentSize()
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            // Cabecera: nombre + botones
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.fillMaxWidth()
@@ -354,22 +405,16 @@ fun ListCard(
                 Text(
                     text = lista.nombre_lista,
                     style = MaterialTheme.typography.titleMedium,
-                    fontSize = 18.sp,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = onEdit) {
                     Icon(Icons.Default.Edit, contentDescription = "Editar lista")
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(
-                        Icons.Default.Delete,
-                        contentDescription = "Borrar lista",
-                        tint = Color.Red
-                    )
+                    Icon(Icons.Default.Delete, contentDescription = "Borrar lista", tint = Color.Red)
                 }
             }
 
-            // Detalle de productos
             AnimatedVisibility(expanded) {
                 Column(modifier = Modifier.padding(top = 8.dp)) {
                     productos.forEach { producto ->
