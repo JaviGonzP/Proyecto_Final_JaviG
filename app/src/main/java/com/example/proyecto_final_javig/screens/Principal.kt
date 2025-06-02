@@ -195,6 +195,9 @@ fun Listas2(
     val isPressedAny by interactionSourceAny.collectIsPressedAsState()
     val elevationAny by animateDpAsState(if (isPressedAny) 2.dp else 4.dp)
 
+    var showAlreadyOwnDialog by remember { mutableStateOf(false) }
+    var dialogError by remember { mutableStateOf(false) }
+
     // Estructura de la pantalla
     Box(
         modifier =
@@ -209,7 +212,7 @@ fun Listas2(
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .run {if (dialogOpen) blur(8.dp) else this}
+                .run {if (dialogOpen || showAlreadyOwnDialog) blur(8.dp) else this}
         ) {
             Box(
                 modifier = Modifier
@@ -234,7 +237,6 @@ fun Listas2(
                             value = id_compartir_lis,
                             onValueChange = { id_compartir_lis = it },
                             label = { Text("Añadir codigo de lista") },
-                            //fontFamily = MonsFontBold,
                             modifier = Modifier
                                 .width(275.dp)
                                 .padding(start = 20.dp, end = 20.dp),
@@ -244,7 +246,20 @@ fun Listas2(
                         )
                         IconButton(
                             onClick = {
-                                userViewModel.agregarIdCompartir(id_compartir_lis)
+                                val ingresado = id_compartir_lis.trim()
+                                // 1) Si está vacío, no hacemos nada
+                                if (ingresado.isBlank()) {
+                                    return@IconButton
+                                }
+                                // 2) Extraemos todos los id_compartir de las propias
+                                val misIDcomp = misListas.map { it.id_compartir }
+                                if (ingresado in misIDcomp) {
+                                    // ... ya es una lista propia: mostramos un diálogo de aviso
+                                    showAlreadyOwnDialog = true
+                                    return@IconButton
+                                }
+                                // 3) Si no era propia, añadimos al array del usuario
+                                userViewModel.agregarIdCompartir(ingresado)
                                 id_compartir_lis = ""
                             },
                             modifier = Modifier
@@ -356,6 +371,18 @@ fun Listas2(
                                         )
                                     }
                                 }
+                            }
+                            if (showAlreadyOwnDialog) {
+                                AlertDialog(
+                                    onDismissRequest = { showAlreadyOwnDialog = false },
+                                    title = { Text("Lista ya existente") },
+                                    text = { Text("No puedes añadir como compartida una lista que ya es tuya.") },
+                                    confirmButton = {
+                                        TextButton(onClick = { showAlreadyOwnDialog = false }) {
+                                            Text("Aceptar")
+                                        }
+                                    }
+                                )
                             }
                         }
                     }
