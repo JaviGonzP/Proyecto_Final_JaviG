@@ -11,5 +11,7 @@ data class ListaItems(
 data class ProductosItems(
     val id_lista: String = "",
     val nombre_producto: String = "",
-    val cantidad_producto: String = ""
+    val cantidad_producto: String = "",
+    var comprado: Boolean = false,
+    var documentId: String = ""
 )

@@ -294,7 +294,8 @@ fun AddProductDialog(
 fun addProducto(firestore: FirebaseFirestore, id_lista: String, productName: String) {
     val producto = hashMapOf(
         "id_lista" to id_lista,
-        "nombre_producto" to productName
+        "nombre_producto" to productName,
+        "comprado" to false
     )
     firestore.collection("productos").add(producto)
         .addOnSuccessListener { Log.d("Success", "Producto añadido correctamente") }

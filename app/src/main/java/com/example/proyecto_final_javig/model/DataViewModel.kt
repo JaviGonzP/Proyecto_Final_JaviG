@@ -21,7 +21,6 @@ class DataViewModel : ViewModel() {
         getData()
     }
 
-
     private fun getData() {
         listListener = FirebaseFirestore.getInstance().collection("listas")
             .addSnapshotListener { snapshot, e ->
@@ -43,11 +42,22 @@ class DataViewModel : ViewModel() {
                     Log.w(TAG, "Listen failed.", e)
                     return@addSnapshotListener
                 }
+//                if (snapshot != null) {
+//                    val productItems = snapshot.toObjects(ProductosItems::class.java)
+//                    stateP.value = productItems
+//                } else {
+//                    Log.d(TAG, "Current data: null")
+//                }
                 if (snapshot != null) {
-                    val productItems = snapshot.toObjects(ProductosItems::class.java)
-                    stateP.value = productItems
-                } else {
-                    Log.d(TAG, "Current data: null")
+                    // aquí construimos manualmente la lista, copiando documentId y comprado
+                    val listaProductos = snapshot.documents.mapNotNull { doc ->
+                        val item = doc.toObject(ProductosItems::class.java)
+                        item?.apply {
+                            documentId = doc.id
+                            // si Firestore nunca guardó el campo "comprado", deja comprado por defecto
+                        }
+                    }
+                    stateP.value = listaProductos
                 }
             }
         userListener = FirebaseFirestore.getInstance().collection("users")

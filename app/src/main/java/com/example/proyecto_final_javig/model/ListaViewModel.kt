@@ -2,12 +2,11 @@ package com.example.proyecto_final_javig.model
 
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.ktx.Firebase
 
 class ListaViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
@@ -46,7 +45,7 @@ class ListaViewModel : ViewModel() {
     fun crearProducto(
         nombreProducto: String,
         cantidadProducto: String,
-        idLista: String
+        idLista: String,
     ) {
         if (_loading.value == false) {
             _loading.value = true
