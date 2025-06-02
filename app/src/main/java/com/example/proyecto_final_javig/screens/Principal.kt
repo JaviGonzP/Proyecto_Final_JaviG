@@ -28,7 +28,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Camera
+import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
@@ -107,10 +107,10 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
                 },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 16.dp)
+                    .padding(16.dp)
             ) {
                 Icon(
-                    imageVector = Icons.Default.Camera,
+                    imageVector = Icons.Default.AddCircle,
                     contentDescription = "Lista",
                     modifier = Modifier.size(20.dp)
                 )
@@ -443,13 +443,21 @@ fun ListCard(
             }
 
             AnimatedVisibility(expanded) {
-                Column(modifier = Modifier.padding(top = 8.dp)) {
-                    productos.forEach { producto ->
-                        ProductRow(
-                            producto = producto,
-                            onToggle = { onToggleProduct(producto) }
-                        )
-                        Divider(modifier = Modifier.padding(vertical = 4.dp))
+                if (productos.isEmpty()) {
+                    Text(text = "No hay productos en esta lista",
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp, bottom = 8.dp),
+                        fontSize = 16.sp)
+                } else {
+                    Column(modifier = Modifier.padding(top = 8.dp)) {
+                        productos.forEach { producto ->
+                            ProductRow(
+                                producto = producto,
+                                onToggle = { onToggleProduct(producto) }
+                            )
+                            Divider(modifier = Modifier.padding(vertical = 4.dp))
+                        }
                     }
                 }
             }
