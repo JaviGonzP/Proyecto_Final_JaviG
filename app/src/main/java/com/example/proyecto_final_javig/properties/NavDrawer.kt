@@ -47,7 +47,7 @@ fun NavDrawer(navigationController: NavController) {
     ModalNavigationDrawer(
         drawerState = drawerState,
         //deslizar con gesto el menu
-        gesturesEnabled = true,
+        gesturesEnabled = false,
         drawerContent = {
             ModalDrawerSheet {
                 Box(
@@ -80,7 +80,7 @@ fun NavDrawer(navigationController: NavController) {
                 val coroutineScope = rememberCoroutineScope()
                 TopAppBar(
                     title = {
-                        Text(text = "TopBar")
+                        Text(text = "Lista Maestra")
                     },
                     navigationIcon = {
                         IconButton(
