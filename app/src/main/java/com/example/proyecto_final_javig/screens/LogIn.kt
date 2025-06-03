@@ -206,7 +206,6 @@ fun IniSesion(navController : NavController,
             .weight(1f),
             verticalArrangement = Arrangement.Center
         ) {
-            Row(){
                 Button(
                     onClick = {
                         // Comprobar si los campos están vacíos
@@ -231,7 +230,6 @@ fun IniSesion(navController : NavController,
                 ) {
                     Text(text = "Iniciar Sesión")
                 }
-            }
         }
         Spacer(modifier = Modifier.height(5.dp))
         ClickableText(
