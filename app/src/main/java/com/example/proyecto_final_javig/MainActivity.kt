@@ -15,6 +15,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
+import com.example.proyecto_final_javig.navigation.ScreenNavHost
 import com.example.proyecto_final_javig.navigation.ScreenNavInicio
 import com.example.proyecto_final_javig.ui.theme.Proyecto_Final_JaviGTheme
 
@@ -31,7 +32,7 @@ class MainActivity : ComponentActivity() {
                     Scaffold(
                     ) { innerPadding ->
                         Modifier.padding(innerPadding)
-                        ScreenNavInicio(navController)
+                        ScreenNavHost(navController)
                     }
                 }
             }

@@ -3,7 +3,10 @@ package com.example.proyecto_final_javig.navigation
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -40,7 +43,7 @@ fun ScreenNavInicio(navController: NavHostController) {
         }
 
         composable(Screens.Admin.route) {
-           Admin(navController)
+            Admin(navController)
         }
         composable("usersAdmin/{userId}") { backStackEntry ->
             val userId = backStackEntry.arguments?.getString("userId") ?: ""
@@ -53,7 +56,7 @@ fun ScreenNavInicio(navController: NavHostController) {
 @RequiresApi(Build.VERSION_CODES.O)
 fun ScreenNavHost(navController: NavHostController) {
 
-    NavHost(navController = navController, startDestination = Screens.Principal.route) {
+    NavHost(navController = navController, startDestination = Screens.LogIn.route) {
 
         composable(Screens.HomeContainer.route) {
             NavDrawer(navController)
@@ -62,10 +65,10 @@ fun ScreenNavHost(navController: NavHostController) {
         composable(Screens.Principal.route) {
             Principal(navController)
         }
+
         composable(Screens.Ajustes.route) {
             Ajustes(navController)
         }
-
         composable(Screens.LogIn.route) {
             LogIn(navController)
         }
@@ -77,13 +80,14 @@ fun ScreenNavHost(navController: NavHostController) {
             Contacto(navController)
         }
         composable(Screens.Scanner.route) {
-            Scanner()
+            Scanner(navController)
         }
         composable(Screens.Mapa.route) {
             MapsScreen(navController = navController)
         }
 
-        composable(route = Screens.InteriorLista.route,
+        composable(
+            route = Screens.InteriorLista.route,
             arguments = listOf(navArgument(DETAIL_ARGUMENT_KEY) {
                 type = NavType.StringType
             })
@@ -92,6 +96,13 @@ fun ScreenNavHost(navController: NavHostController) {
             val id = it.arguments?.getString(DETAIL_ARGUMENT_KEY).toString()
             Log.d("Args", it.arguments?.getString(DETAIL_ARGUMENT_KEY).toString())
             InteriorLista(navController, id)
+        }
+        composable(Screens.Admin.route) {
+            Admin(navController)
+        }
+        composable("usersAdmin/{userId}") { backStackEntry ->
+            val userId = backStackEntry.arguments?.getString("userId") ?: ""
+            UsersAdmin(userId)
         }
     }
 }
