@@ -3,6 +3,7 @@ package com.example.proyecto_final_javig.screens
 import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,21 +18,30 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Camera
 import androidx.compose.material3.Button
+import androidx.compose.material3.DrawerValue
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
 import com.example.proyecto_final_javig.properties.CaptureActivityPortrait
+import com.example.proyecto_final_javig.properties.DrawerContent
+import com.example.proyecto_final_javig.properties.TopBarCustom
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanOptions
 import kotlinx.coroutines.CoroutineScope
@@ -63,9 +73,47 @@ data class Product(
     val ingredients_text: String?
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun Scanner(navController: NavHostController) {
+    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    // Usamos ModalNavigationDrawer + Scaffold(topBar = TopBarCustom):
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = true,
+        drawerContent = {
+            DrawerContent(
+                navController = navController,
+                drawerState = drawerState,
+                scope = scope
+            )
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopBarCustom(
+                    titulo = "Scanner",
+                    onMenuClick = { scope.launch { drawerState.open() } }
+                )
+            }
+        ) { innerPadding ->
+            // Aplicamos padding para no quedar debajo de la TopBar
+            Box(modifier = Modifier
+                .padding(innerPadding)
+                .fillMaxSize()
+            ) {
+                ScannerContent()
+            }
+        }
+    }
+}
+
+
 
 @Composable
-fun Scanner(){
+fun ScannerContent(){
     var resultadoEscaner by remember { mutableStateOf("") }
     //API
     var producto by remember { mutableStateOf<Product?>(null) }
@@ -83,7 +131,6 @@ fun Scanner(){
         modifier = Modifier
             .fillMaxSize()
             .padding(
-                top = 70.dp,
                 start = 16.dp,
                 end = 16.dp,
                 bottom = 16.dp

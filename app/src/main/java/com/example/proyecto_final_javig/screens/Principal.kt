@@ -35,10 +35,12 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
@@ -47,11 +49,13 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,12 +70,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.proyecto_final_javig.model.DataViewModel
 import com.example.proyecto_final_javig.model.ListaItems
 import com.example.proyecto_final_javig.model.ProductosItems
 import com.example.proyecto_final_javig.model.UserViewModel
 import com.example.proyecto_final_javig.model.deleteLista
 import com.example.proyecto_final_javig.navigation.Screens
+import com.example.proyecto_final_javig.properties.DrawerContent
+import com.example.proyecto_final_javig.properties.TopBarCustom
 import com.example.proyecto_final_javig.ui.theme.blanco
 import com.example.proyecto_final_javig.ui.theme.fondo_azul
 import com.example.proyecto_final_javig.ui.theme.fondo_rosa
@@ -81,11 +88,49 @@ import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.RoundedCorner
 import com.google.firebase.firestore.FirebaseFirestore
+import kotlinx.coroutines.launch
 import kotlin.random.Random
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun Principal(navController: NavController, userViewModel: UserViewModel = viewModel()) {
+fun Principal(navController: NavHostController) {
+    val scope = rememberCoroutineScope()
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+
+    ModalNavigationDrawer(
+        drawerState = drawerState,
+        gesturesEnabled = true,
+        drawerContent = {
+            //  ─────────── Aquí invocamos el DrawerContent que definimos ↑
+            DrawerContent(
+                navController = navController,
+                drawerState = drawerState,
+                scope = scope
+            )
+        }
+    ) {
+        Scaffold(
+            topBar = {
+                TopBarCustom(
+                    titulo = "Lista Maestra",
+                    onMenuClick = { scope.launch { drawerState.open() } }
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                // ───────── Aquí va TODO el contenido original de Principal. ─────────
+                PrincipalContent(navController)
+            }
+        }
+    }
+}
+
+@Composable
+private fun PrincipalContent(
+    navController: NavHostController,
+    userViewModel: UserViewModel = viewModel()
+) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var listaToDelete by remember { mutableStateOf<ListaItems?>(null) }
@@ -93,32 +138,29 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
-                .padding(top = 60.dp)
-                // ← aquí uso showDeleteDialog para el blur
-                .blur(if (showAddDialog || showDeleteDialog) 8.dp else 0.dp)
+                .run { if (showAddDialog || showDeleteDialog) blur(8.dp) else this }
                 .fillMaxHeight()
                 .background(
                     brush = Brush.verticalGradient(listOf(fondo_azul, fondo_rosa))
                 )
         ) {
             Button(
-                onClick = {
-                    showAddDialog = true
-                },
+                onClick = { showAddDialog = true },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp)
             ) {
                 Icon(
                     imageVector = Icons.Default.AddCircle,
-                    contentDescription = "Lista",
+                    contentDescription = "Crear lista",
                     modifier = Modifier.size(20.dp)
                 )
-                Spacer(Modifier.width(8.dp))
+                Spacer(modifier = Modifier.width(8.dp))
                 Text("Crear nueva lista")
             }
+
             Listas2(
-                navController,
+                navController = navController,
                 onRequestDelete = { lista ->
                     listaToDelete = lista
                     showDeleteDialog = true
@@ -161,7 +203,6 @@ fun Principal(navController: NavController, userViewModel: UserViewModel = viewM
         }
     }
 }
-
 
 data class Producto(
     val nombre_producto: String = "",
