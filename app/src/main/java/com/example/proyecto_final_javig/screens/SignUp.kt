@@ -38,6 +38,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -279,6 +280,8 @@ fun CrearCuenta(
         ) {
             Row() {
                 Button(
+                    modifier = Modifier.height(50.dp).fillMaxWidth(.65f),
+
                     onClick = {
                         validacion = true
                         passwordError = validarPassword(con.value)
@@ -312,10 +315,10 @@ fun CrearCuenta(
                     },
                     colors = ButtonDefaults.buttonColors(color2),
                 ) {
-                    Text(text = "Crear cuenta")
+                    Text(text = "CREAR CUENTA", style = TextStyle(color = blanco, fontSize = 16.sp, fontWeight = Bold) )
                 }
             }
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             //Texto Clickble para ir a inicio de sesión
             ClickableText(
                 style = TextStyle(

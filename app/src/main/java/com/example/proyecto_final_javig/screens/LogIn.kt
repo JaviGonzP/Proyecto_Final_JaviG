@@ -41,6 +41,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
@@ -203,10 +204,11 @@ fun IniSesion(navController : NavController,
         }
         Spacer(modifier = Modifier.height(20.dp))
         Column( modifier = Modifier
-            .weight(1f),
+            .weight(1f).padding(top = 70.dp),
             verticalArrangement = Arrangement.Center
         ) {
                 Button(
+                    modifier = Modifier.height(50.dp).fillMaxWidth(.65f),
                     onClick = {
                         // Comprobar si los campos están vacíos
                         if (username.value.isNotEmpty() && password.value.isNotEmpty()) {
@@ -228,7 +230,7 @@ fun IniSesion(navController : NavController,
                     },
                     colors = ButtonDefaults.buttonColors(color2),
                 ) {
-                    Text(text = "Iniciar Sesión")
+                    Text(text = "INICIAR SESIÓN", style = TextStyle(color = blanco, fontSize = 16.sp, fontWeight = Bold) )
                 }
         }
         Spacer(modifier = Modifier.height(5.dp))
