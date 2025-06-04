@@ -83,11 +83,13 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:22.3.1")
     implementation("androidx.ink:ink-geometry-android:1.0.0-alpha01")
     implementation("com.google.firebase:firebase-crashlytics-buildtools:3.0.3")
-    implementation ("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
-
+    implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1")
+    
     testImplementation("junit:junit:4.13.2")
     androidTestImplementation("androidx.test.ext:junit:1.1.5")
 //    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+
+
 
     androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
     androidTestImplementation(platform("androidx.compose:compose-bom:2023.03.00"))

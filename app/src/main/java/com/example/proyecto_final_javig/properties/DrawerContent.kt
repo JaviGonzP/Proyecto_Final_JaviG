@@ -19,7 +19,6 @@ import com.example.proyecto_final_javig.ui.theme.colorBoton
 import com.example.proyecto_final_javig.ui.theme.colorFondo
 import kotlinx.coroutines.CoroutineScope
 
-// 1) DrawerContent.kt
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DrawerContent(

@@ -5,7 +5,6 @@ import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -32,13 +31,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
@@ -59,7 +56,6 @@ import com.example.proyecto_final_javig.ui.theme.colorAlpha1
 import com.example.proyecto_final_javig.ui.theme.colorAlpha2
 import com.example.proyecto_final_javig.ui.theme.colorBoton
 import com.example.proyecto_final_javig.ui.theme.colorFondo
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
 fun SignUp(
@@ -363,7 +359,7 @@ fun CrearCuenta(
                             nombre.value,
                             apellido.value
                         ) {
-                            navController.navigate(Screens.HomeContainer.route) {
+                            navController.navigate(Screens.Principal.route) {
                                 popUpTo(Screens.LogIn.route) {
                                     inclusive = true
                                 }
