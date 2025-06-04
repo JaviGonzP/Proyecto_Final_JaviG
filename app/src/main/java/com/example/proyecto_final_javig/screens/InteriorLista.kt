@@ -49,7 +49,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
@@ -60,9 +59,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyecto_final_javig.model.DataViewModel
 import com.example.proyecto_final_javig.model.ProductosItems
+import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.blanco
-import com.example.proyecto_final_javig.ui.theme.fondo_azul
-import com.example.proyecto_final_javig.ui.theme.fondo_rosa
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
@@ -136,11 +134,9 @@ fun InteriorLista(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(fondo_azul, fondo_rosa)
-                    )
+                    colorFondo.value
                 )
-                .padding(top = 80.dp)
+//                .padding(top = 80.dp)
         ) {
             // ─────────────────────────────────────────────────────
             //  CABECERA: Nombre de la lista + botones Edit, Share, Add

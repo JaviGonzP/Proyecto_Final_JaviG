@@ -47,7 +47,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -64,8 +63,7 @@ import com.example.proyecto_final_javig.properties.DrawerContent
 import com.example.proyecto_final_javig.properties.TopBarCustom
 import com.example.proyecto_final_javig.ui.theme.AvatarResources
 import com.example.proyecto_final_javig.ui.theme.blanco
-import com.example.proyecto_final_javig.ui.theme.fondo_azul
-import com.example.proyecto_final_javig.ui.theme.fondo_rosa
+import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
@@ -141,9 +139,7 @@ fun AjustesContent(
         modifier = Modifier
             .fillMaxSize()
             .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(fondo_azul, fondo_rosa)
-                )
+                colorFondo.value
             )
             .blur(if (shouldBlur) 8.dp else 0.dp)
     ) {

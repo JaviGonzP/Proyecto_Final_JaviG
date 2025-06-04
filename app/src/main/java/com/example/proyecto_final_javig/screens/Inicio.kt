@@ -42,8 +42,7 @@ import androidx.navigation.NavController
 import com.example.proyecto_final_javig.model.ListaViewModel
 import com.example.proyecto_final_javig.ui.theme.azul
 import com.example.proyecto_final_javig.ui.theme.blanco
-import com.example.proyecto_final_javig.ui.theme.fondo_azul
-import com.example.proyecto_final_javig.ui.theme.fondo_rosa
+import com.example.proyecto_final_javig.ui.theme.colorFondo
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -95,8 +94,8 @@ fun Muestra(viewModel: ListaViewModel = androidx.lifecycle.viewmodel.compose.vie
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        fondo_azul,
-                        fondo_rosa
+                        colorFondo.value,
+
                     )
                 )
             )

@@ -1,5 +1,6 @@
 package com.example.proyecto_final_javig.properties
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
@@ -15,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.proyecto_final_javig.ui.theme.colorAlpha2
 
 // 2) TopBarCustom.kt
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,9 +25,8 @@ fun TopBarCustom(
     titulo: String,
     onMenuClick: () -> Unit
 ) {
-    // Fijamos la altura total con height(48.dp) (puedes ajustar a 42.dp o 40.dp si quieres algo todavía más bajo)
     CenterAlignedTopAppBar(
-        modifier = Modifier.height(60.dp),
+        modifier = Modifier.height(60.dp).background(colorAlpha2.value.copy(alpha = .3f)),
         navigationIcon = {
             Box(
                 modifier = Modifier.fillMaxHeight(),

@@ -79,14 +79,15 @@ import com.example.proyecto_final_javig.model.deleteLista
 import com.example.proyecto_final_javig.navigation.Screens
 import com.example.proyecto_final_javig.properties.DrawerContent
 import com.example.proyecto_final_javig.properties.TopBarCustom
+import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.blanco
-import com.example.proyecto_final_javig.ui.theme.fondo_azul
-import com.example.proyecto_final_javig.ui.theme.fondo_rosa
+import com.example.proyecto_final_javig.ui.theme.colorAlpha2
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.RoundedCorner
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 import kotlin.random.Random
@@ -98,28 +99,22 @@ fun Principal(navController: NavHostController) {
     val scope = rememberCoroutineScope()
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(color = colorAlpha2.value.copy(alpha = .3f), darkIcons = true)
+
     ModalNavigationDrawer(
-        drawerState = drawerState,
-        gesturesEnabled = true,
-        drawerContent = {
+        drawerState = drawerState, gesturesEnabled = true, drawerContent = {
             //  ─────────── Aquí invocamos el DrawerContent que definimos ↑
             DrawerContent(
-                navController = navController,
-                drawerState = drawerState,
-                scope = scope
+                navController = navController, drawerState = drawerState, scope = scope
             )
-        }
-    ) {
+        }) {
         Scaffold(
             topBar = {
                 TopBarCustom(
-                    titulo = "Lista Maestra",
-                    onMenuClick = { scope.launch { drawerState.open() } }
-                )
-            }
-        ) { innerPadding ->
+                    titulo = "Lista Maestra", onMenuClick = { scope.launch { drawerState.open() } })
+            }) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
-                // ───────── Aquí va TODO el contenido original de Principal. ─────────
                 PrincipalContent(navController)
             }
         }
@@ -128,22 +123,19 @@ fun Principal(navController: NavHostController) {
 
 @Composable
 private fun PrincipalContent(
-    navController: NavHostController,
-    userViewModel: UserViewModel = viewModel()
+    navController: NavHostController, userViewModel: UserViewModel = viewModel()
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var listaToDelete by remember { mutableStateOf<ListaItems?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .run { if (showAddDialog || showDeleteDialog) blur(8.dp) else this }
-                .fillMaxHeight()
-                .background(
-                    brush = Brush.verticalGradient(listOf(fondo_azul, fondo_rosa))
-                )
-        ) {
+        Column(modifier = Modifier
+            .run { if (showAddDialog || showDeleteDialog) blur(8.dp) else this }
+            .fillMaxHeight()
+            .background(
+                colorFondo.value
+            )) {
             Button(
                 onClick = { showAddDialog = true },
                 modifier = Modifier
@@ -160,12 +152,10 @@ private fun PrincipalContent(
             }
 
             Listas2(
-                navController = navController,
-                onRequestDelete = { lista ->
+                navController = navController, onRequestDelete = { lista ->
                     listaToDelete = lista
                     showDeleteDialog = true
-                }
-            )
+                })
         }
 
         // Diálogo de “añadir lista”
@@ -177,9 +167,9 @@ private fun PrincipalContent(
         if (showDeleteDialog && listaToDelete != null) {
             AlertDialog(
                 onDismissRequest = {
-                    showDeleteDialog = false
-                    listaToDelete = null
-                },
+                showDeleteDialog = false
+                listaToDelete = null
+            },
                 title = { Text("¿Eliminar lista?") },
                 text = { Text("Se eliminarán también sus productos. ¿Continuar?") },
                 confirmButton = {
@@ -198,8 +188,7 @@ private fun PrincipalContent(
                     }) {
                         Text("Cancelar")
                     }
-                }
-            )
+                })
         }
     }
 }
@@ -241,30 +230,20 @@ fun Listas2(
 
     // Estructura de la pantalla
     Box(
-        modifier =
-        Modifier
-            .background(blanco)
+        modifier = Modifier
+            .background(colorFondo.value)
             .shadow(
-                25.dp,
-                RectangleShape,
-                clip = false
+                25.dp, RectangleShape, clip = false
             )
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .run {if (dialogOpen || showAlreadyOwnDialog) blur(8.dp) else this}
-        ) {
+            modifier = Modifier.fillMaxWidth()
+                .run { if (dialogOpen || showAlreadyOwnDialog) blur(8.dp) else this }) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                fondo_azul,
-                                fondo_rosa
-                            )
-                        )
+                        colorFondo.value,
                     )
             ) {
                 Column(
@@ -307,8 +286,7 @@ fun Listas2(
                                 .padding(top = 10.dp)
                                 .size(48.dp)
                                 .background(
-                                    Color.Gray,
-                                    CircleShape
+                                    Color.Gray, CircleShape
                                 )
                                 .neu(
                                     lightShadowColor = gris,
@@ -328,8 +306,7 @@ fun Listas2(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Column(
-                        modifier = Modifier
-                            .fillMaxHeight(),
+                        modifier = Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
 
@@ -361,20 +338,23 @@ fun Listas2(
                                     }
                                 } else {
                                     items(misListas, key = { it.id_lista }) { lista ->
-                                        val productosEstaLista = dataViewModel.stateP.value
-                                            .filter { it.id_lista == lista.id_lista }
+                                        val productosEstaLista =
+                                            dataViewModel.stateP.value.filter { it.id_lista == lista.id_lista }
                                         ListCard(
                                             lista = lista,
                                             productos = productosEstaLista,
                                             isShared = false,
                                             onEdit = {
-                                                navController.navigate(Screens.InteriorLista.passId(lista.id_lista))
+                                                navController.navigate(
+                                                    Screens.InteriorLista.passId(
+                                                        lista.id_lista
+                                                    )
+                                                )
                                             },
                                             onDelete = { onRequestDelete(lista) },
                                             onToggleProduct = { producto ->
                                                 toggleProductoComprado(producto)
-                                            }
-                                        )
+                                            })
                                     }
                                 }
 
@@ -396,20 +376,23 @@ fun Listas2(
                                     }
                                 } else {
                                     items(listasCompartidas, key = { it.id_lista }) { lista ->
-                                        val productosEstaLista = dataViewModel.stateP.value
-                                            .filter { it.id_lista == lista.id_lista }
+                                        val productosEstaLista =
+                                            dataViewModel.stateP.value.filter { it.id_lista == lista.id_lista }
                                         ListCard(
                                             lista = lista,
                                             productos = productosEstaLista,
                                             isShared = true,
                                             onEdit = {
-                                                navController.navigate(Screens.InteriorLista.passId(lista.id_lista))
+                                                navController.navigate(
+                                                    Screens.InteriorLista.passId(
+                                                        lista.id_lista
+                                                    )
+                                                )
                                             },
                                             onDelete = { onRequestDelete(lista) },
                                             onToggleProduct = { producto ->
                                                 toggleProductoComprado(producto)
-                                            }
-                                        )
+                                            })
                                     }
                                 }
                             }
@@ -422,8 +405,7 @@ fun Listas2(
                                         TextButton(onClick = { showAlreadyOwnDialog = false }) {
                                             Text("Aceptar")
                                         }
-                                    }
-                                )
+                                    })
                             }
                         }
                     }
@@ -435,9 +417,7 @@ fun Listas2(
 
 fun toggleProductoComprado(producto: ProductosItems) {
     val nueva = !producto.comprado
-    FirebaseFirestore.getInstance()
-        .collection("productos")
-        .document(producto.documentId)
+    FirebaseFirestore.getInstance().collection("productos").document(producto.documentId)
         .update("comprado", nueva)
 }
 
@@ -453,7 +433,8 @@ fun ListCard(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    val bgColor = if (isShared) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
+    val bgColor =
+        if (isShared) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
 
     Surface(
         tonalElevation = 4.dp,
@@ -463,12 +444,10 @@ fun ListCard(
             .fillMaxWidth()
             .padding(horizontal = 16.dp)
             .clickable { expanded = !expanded }
-            .animateContentSize()
-    ) {
+            .animateContentSize()) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
             ) {
                 Text(
                     text = lista.nombre_lista,
@@ -479,24 +458,26 @@ fun ListCard(
                     Icon(Icons.Default.Edit, contentDescription = "Editar lista")
                 }
                 IconButton(onClick = onDelete) {
-                    Icon(Icons.Default.Delete, contentDescription = "Borrar lista", tint = Color.Red)
+                    Icon(
+                        Icons.Default.Delete, contentDescription = "Borrar lista", tint = Color.Red
+                    )
                 }
             }
 
             AnimatedVisibility(expanded) {
                 if (productos.isEmpty()) {
-                    Text(text = "No hay productos en esta lista",
+                    Text(
+                        text = "No hay productos en esta lista",
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp, bottom = 8.dp),
-                        fontSize = 16.sp)
+                        fontSize = 16.sp
+                    )
                 } else {
                     Column(modifier = Modifier.padding(top = 8.dp)) {
                         productos.forEach { producto ->
                             ProductRow(
-                                producto = producto,
-                                onToggle = { onToggleProduct(producto) }
-                            )
+                                producto = producto, onToggle = { onToggleProduct(producto) })
                             Divider(modifier = Modifier.padding(vertical = 4.dp))
                         }
                     }
@@ -508,23 +489,18 @@ fun ListCard(
 
 @Composable
 fun ProductRow(
-    producto: ProductosItems,
-    onToggle: () -> Unit
+    producto: ProductosItems, onToggle: () -> Unit
 ) {
     var checked by remember { mutableStateOf(producto.comprado) }
 
     Row(
-        verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .fillMaxWidth()
+        verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
     ) {
         Checkbox(
-            checked = checked,
-            onCheckedChange = {
+            checked = checked, onCheckedChange = {
                 checked = it
                 onToggle()
-            }
-        )
+            })
         Spacer(Modifier.width(8.dp))
         Text(
             text = producto.nombre_producto,
@@ -546,13 +522,10 @@ fun Barra(navController: NavController, showDialog: (Boolean) -> Unit) {
     Scaffold(topBar = {
         var showMenu by remember { mutableStateOf(false) }
         Box(
-            modifier =
-            Modifier
+            modifier = Modifier
                 .background(blanco)
                 .shadow(
-                    50.dp,
-                    RectangleShape,
-                    clip = false
+                    50.dp, RectangleShape, clip = false
                 )
         ) {
             TopAppBar( //Colores
@@ -562,15 +535,13 @@ fun Barra(navController: NavController, showDialog: (Boolean) -> Unit) {
                     navigationIconContentColor = MaterialTheme.colorScheme.onSecondary
                 ),
                 // Título de la barra superior
-                title = { Text(text = "Listas", color = gris, fontSize = 25.sp) },
-                actions = {
+                title = { Text(text = "Listas", color = gris, fontSize = 25.sp) }, actions = {
                     IconButton(
                         onClick = { showDialog(true) },
                         modifier = Modifier
                             .size(48.dp)
                             .background(
-                                Color.Gray,
-                                CircleShape
+                                Color.Gray, CircleShape
                             )
                             .neu(
                                 lightShadowColor = gris,
@@ -585,8 +556,7 @@ fun Barra(navController: NavController, showDialog: (Boolean) -> Unit) {
                             text = "+", color = gris, style = TextStyle(fontSize = 35.sp)
                         )
                     }
-                }
-            )
+                })
         }
     }) {
 
@@ -595,13 +565,14 @@ fun Barra(navController: NavController, showDialog: (Boolean) -> Unit) {
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddListDialog(onDismiss: () -> Unit,
-                  userViewModel: UserViewModel = viewModel()) {
+fun AddListDialog(
+    onDismiss: () -> Unit, userViewModel: UserViewModel = viewModel()
+) {
     var listName by remember { mutableStateOf("") }
     val firestore = FirebaseFirestore.getInstance()
     val userId = userViewModel.stateU.value.user_id
-    AlertDialog(onDismissRequest =
-    onDismiss,
+    AlertDialog(
+        onDismissRequest = onDismiss,
         confirmButton = {
             TextButton(onClick = {
                 val idLista = generateRandomId()
@@ -628,7 +599,13 @@ fun generateRandomIdComp(): String {
     return Random.nextInt(100000000, 999999999).toString()
 }
 
-fun saveListToFirebase(idLista: String, listName: String, userId: String, idCompartir: String, firestore: FirebaseFirestore) {
+fun saveListToFirebase(
+    idLista: String,
+    listName: String,
+    userId: String,
+    idCompartir: String,
+    firestore: FirebaseFirestore
+) {
     val listData = hashMapOf(
         "id_lista" to idLista,
         "nombre_lista" to listName,
