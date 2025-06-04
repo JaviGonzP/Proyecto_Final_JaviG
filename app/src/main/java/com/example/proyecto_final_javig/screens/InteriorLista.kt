@@ -49,8 +49,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -60,14 +60,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.proyecto_final_javig.model.DataViewModel
 import com.example.proyecto_final_javig.model.ProductosItems
+import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.blanco
-import com.example.proyecto_final_javig.ui.theme.fondo_azul
-import com.example.proyecto_final_javig.ui.theme.fondo_rosa
+import com.example.proyecto_final_javig.ui.theme.colorAlpha1
+import com.example.proyecto_final_javig.ui.theme.colorAlpha2
+import com.example.proyecto_final_javig.ui.theme.colorBoton
+import com.example.proyecto_final_javig.ui.theme.colorTexto
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.RoundedCorner
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -78,6 +82,12 @@ fun InteriorLista(
     id: String,
     dataViewModel: DataViewModel = viewModel()
 ) {
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(
+        color = colorFondo.value, darkIcons = true
+    )
+
     // 1) Obtenemos la lista y sus productos desde el ViewModel
     val allLists = dataViewModel.stateM.value
     val allProducts = dataViewModel.stateP.value
@@ -136,11 +146,10 @@ fun InteriorLista(
             modifier = Modifier
                 .fillMaxSize()
                 .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(fondo_azul, fondo_rosa)
-                    )
+                    colorFondo.value
                 )
-                .padding(top = 80.dp)
+                .padding(bottom = 25.dp)
+//                .padding(top = 80.dp)
         ) {
             // ─────────────────────────────────────────────────────
             //  CABECERA: Nombre de la lista + botones Edit, Share, Add
@@ -153,7 +162,7 @@ fun InteriorLista(
                 Text(
                     text = selectedLista.nombre_lista,
                     fontSize = 26.sp,
-                    color = gris,
+                    color = colorAlpha2.value.copy(alpha = 0.8f),
                     modifier = Modifier
                         .weight(1f)
                         .padding(top = 10.dp, start = 10.dp)
@@ -166,44 +175,34 @@ fun InteriorLista(
                     },
                     modifier = Modifier
                         .size(48.dp)
-                        .background(Color.Gray, CircleShape)
-                        .neu(
-                            lightShadowColor = gris,
-                            darkShadowColor = blanco,
-                            shadowElevation = elevationEdit,
-                            lightSource = LightSource.LEFT_BOTTOM,
-                            shape = Flat(RoundedCorner(24.dp))
-                        ),
+                        .background(colorBoton.value, CircleShape),
                     interactionSource = interactionSourceEdit
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Editar nombre",
-                        tint = gris
+                        tint = colorTexto.value
                     )
                 }
+
+                Spacer(modifier = Modifier.width(12.dp))
 
                 // Botón Compartir
                 IconButton(
                     onClick = { showShareDialog = true },
                     modifier = Modifier
                         .size(48.dp)
-                        .background(Color.Gray, CircleShape)
-                        .neu(
-                            lightShadowColor = gris,
-                            darkShadowColor = blanco,
-                            shadowElevation = elevationShare,
-                            lightSource = LightSource.LEFT_BOTTOM,
-                            shape = Flat(RoundedCorner(24.dp))
-                        ),
+                        .background(colorBoton.value, CircleShape),
                     interactionSource = interactionSourceShare
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = "Compartir lista",
-                        tint = gris
+                        tint = colorTexto.value
                     )
                 }
+
+                Spacer(modifier = Modifier.width(12.dp))
 
                 // Botón Añadir producto
                 IconButton(
@@ -213,17 +212,10 @@ fun InteriorLista(
                     },
                     modifier = Modifier
                         .size(48.dp)
-                        .background(Color.Gray, CircleShape)
-                        .neu(
-                            lightShadowColor = gris,
-                            darkShadowColor = blanco,
-                            shadowElevation = elevationAdd,
-                            lightSource = LightSource.LEFT_BOTTOM,
-                            shape = Flat(RoundedCorner(24.dp))
-                        ),
+                        .background(colorBoton.value, CircleShape),
                     interactionSource = interactionSourceAdd
                 ) {
-                    Text(text = "+", color = gris, style = TextStyle(fontSize = 35.sp))
+                    Text(text = "+", color = colorTexto.value, style = TextStyle(fontSize = 35.sp))
                 }
             }
 
@@ -240,7 +232,7 @@ fun InteriorLista(
                     item {
                         Text(
                             text = "No hay productos en esta lista, pulsa en el botón + para añadir uno",
-                            color = Color.DarkGray,
+                            color = colorAlpha2.value.copy(alpha = 0.8f),
                             modifier = Modifier.padding(top = 20.dp)
                         )
                     }
@@ -260,7 +252,10 @@ fun InteriorLista(
                                             producto.comprado = nueva
                                         }
                                         .addOnFailureListener { e ->
-                                            Log.e("InteriorLista", "Error toggling comprado: ${e.message}")
+                                            Log.e(
+                                                "InteriorLista",
+                                                "Error toggling comprado: ${e.message}"
+                                            )
                                         }
                                 }
                             },
@@ -306,7 +301,10 @@ fun InteriorLista(
                                             showEditNameDialog = false
                                         }
                                         .addOnFailureListener { e ->
-                                            Log.e("InteriorLista", "Error actualizando nombre: ${e.message}")
+                                            Log.e(
+                                                "InteriorLista",
+                                                "Error actualizando nombre: ${e.message}"
+                                            )
                                         }
                                 }
                             }
@@ -431,10 +429,11 @@ fun ProductCardInterior(
 
     Surface(
         tonalElevation = 4.dp,
-        shape = RoundedCornerShape(8.dp),
-        color = blanco,
+        shape = RoundedCornerShape(20.dp),
+        color = colorAlpha1.value.copy(.3f),
         modifier = Modifier
             .fillMaxWidth()
+
             .clickable { /* opcional: expandir para más detalles */ }
     ) {
         Row(
@@ -454,6 +453,7 @@ fun ProductCardInterior(
             Text(
                 text = producto.nombre_producto,
                 style = MaterialTheme.typography.bodyLarge,
+                color = colorAlpha2.value.copy(alpha = 0.8f),
                 textDecoration = if (checked) TextDecoration.LineThrough else TextDecoration.None,
                 modifier = Modifier.weight(1f),
                 fontSize = 18.sp

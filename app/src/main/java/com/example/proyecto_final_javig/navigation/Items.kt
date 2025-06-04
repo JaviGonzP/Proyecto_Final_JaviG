@@ -17,9 +17,9 @@ data class Item(
 object Items{
 
     val items = arrayOf(
-        Item("Principal", Icons.Default.Home, "Principal", Screens.Principal.route),
-        Item("Ajustes", Icons.Default.AccountCircle, "Ajustes", Screens.Ajustes.route),
-        Item("Scanner",  Icons.Default.QrCodeScanner, "Scanner", Screens.Scanner.route)
+        Item("Listas", Icons.Default.Home, "Listas", Screens.Principal.route),
+        Item("Perfil", Icons.Default.AccountCircle, "Perfil", Screens.Ajustes.route),
+        Item("Lector",  Icons.Default.QrCodeScanner, "Lector", Screens.Scanner.route)
         //Item("Principal", false, Icons.Default.Home, "Principal", Screens.Principal.route)
     )
 }
