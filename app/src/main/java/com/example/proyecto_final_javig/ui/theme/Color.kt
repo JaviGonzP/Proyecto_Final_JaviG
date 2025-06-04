@@ -27,6 +27,10 @@ val borde_default = Color(0xFF242222)
 val alpha_default1 = Color(0xFFFFFFFF)
 val alpha_default2 = Color(0xFF000000)
 
+// temas
+val fondo_coral = Color(0xFFFFA5A5)
+val boton_coral = Color(0xFFA84848)
+
 //COLOR DE ALTO CONTRASTE EN EL QUE TENERLO CON LA OPACIDAD AL 0 PARA CAMBIARLO AL 100
 val color_contraste = Color(0x00F6DC69)
 

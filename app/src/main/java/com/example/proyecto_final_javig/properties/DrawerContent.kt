@@ -15,6 +15,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.proyecto_final_javig.navigation.DrawerItems
 import com.example.proyecto_final_javig.navigation.Items
+import com.example.proyecto_final_javig.ui.theme.colorBoton
+import com.example.proyecto_final_javig.ui.theme.colorFondo
 import kotlinx.coroutines.CoroutineScope
 
 // 1) DrawerContent.kt
@@ -25,7 +27,9 @@ fun DrawerContent(
     drawerState: DrawerState,
     scope: CoroutineScope
 ) {
-    ModalDrawerSheet {
+    ModalDrawerSheet(
+    ) {
+
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "Mi App",
@@ -45,7 +49,8 @@ fun DrawerContent(
                 route = item.route,
                 coroutineScope = scope,
                 drawerState = drawerState,
-                navigationController = navController
+                navigationController = navController,
+
             )
         }
     }

@@ -7,6 +7,7 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
@@ -33,6 +34,7 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DrawerValue
@@ -60,11 +62,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -81,7 +86,10 @@ import com.example.proyecto_final_javig.properties.DrawerContent
 import com.example.proyecto_final_javig.properties.TopBarCustom
 import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.blanco
+import com.example.proyecto_final_javig.ui.theme.colorAlpha1
 import com.example.proyecto_final_javig.ui.theme.colorAlpha2
+import com.example.proyecto_final_javig.ui.theme.colorBoton
+import com.example.proyecto_final_javig.ui.theme.colorTexto
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
@@ -100,21 +108,25 @@ fun Principal(navController: NavHostController) {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
 
     val systemUiController = rememberSystemUiController()
-    systemUiController.setStatusBarColor(color = colorAlpha2.value.copy(alpha = .3f), darkIcons = true)
+    systemUiController.setStatusBarColor(
+        color = colorAlpha2.value.copy(.2f).compositeOver(colorFondo.value), darkIcons = true
+    )
 
     ModalNavigationDrawer(
         drawerState = drawerState, gesturesEnabled = true, drawerContent = {
-            //  ─────────── Aquí invocamos el DrawerContent que definimos ↑
             DrawerContent(
                 navController = navController, drawerState = drawerState, scope = scope
             )
         }) {
         Scaffold(
-            topBar = {
+            modifier = Modifier.fillMaxSize(), topBar = {
                 TopBarCustom(
                     titulo = "Lista Maestra", onMenuClick = { scope.launch { drawerState.open() } })
             }) { innerPadding ->
-            Box(modifier = Modifier.padding(innerPadding)) {
+            Box(
+                modifier = Modifier
+                    .padding(innerPadding)
+            ) {
                 PrincipalContent(navController)
             }
         }
@@ -123,39 +135,28 @@ fun Principal(navController: NavHostController) {
 
 @Composable
 private fun PrincipalContent(
-    navController: NavHostController, userViewModel: UserViewModel = viewModel()
+    navController: NavHostController,
+    userViewModel: UserViewModel = viewModel()
 ) {
     var showAddDialog by remember { mutableStateOf(false) }
     var showDeleteDialog by remember { mutableStateOf(false) }
     var listaToDelete by remember { mutableStateOf<ListaItems?>(null) }
 
     Box(modifier = Modifier.fillMaxSize()) {
-        Column(modifier = Modifier
-            .run { if (showAddDialog || showDeleteDialog) blur(8.dp) else this }
-            .fillMaxHeight()
-            .background(
-                colorFondo.value
-            )) {
-            Button(
-                onClick = { showAddDialog = true },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.AddCircle,
-                    contentDescription = "Crear lista",
-                    modifier = Modifier.size(20.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Crear nueva lista")
-            }
-
+        Column(
+            modifier = Modifier
+                .run { if (showAddDialog || showDeleteDialog) blur(8.dp) else this }
+                .fillMaxHeight()
+                .background(colorFondo.value)
+        ) {
             Listas2(
-                navController = navController, onRequestDelete = { lista ->
+                navController = navController,
+                onRequestDelete = { lista ->
                     listaToDelete = lista
                     showDeleteDialog = true
-                })
+                },
+                onAddClick = { showAddDialog = true }  // <-- aquí le decimos “abre el diálogo”
+            )
         }
 
         // Diálogo de “añadir lista”
@@ -167,9 +168,9 @@ private fun PrincipalContent(
         if (showDeleteDialog && listaToDelete != null) {
             AlertDialog(
                 onDismissRequest = {
-                showDeleteDialog = false
-                listaToDelete = null
-            },
+                    showDeleteDialog = false
+                    listaToDelete = null
+                },
                 title = { Text("¿Eliminar lista?") },
                 text = { Text("Se eliminarán también sus productos. ¿Continuar?") },
                 confirmButton = {
@@ -188,10 +189,12 @@ private fun PrincipalContent(
                     }) {
                         Text("Cancelar")
                     }
-                })
+                }
+            )
         }
     }
 }
+
 
 data class Producto(
     val nombre_producto: String = "",
@@ -202,19 +205,19 @@ data class Producto(
 
 val productos = mutableStateListOf<Producto>()
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun Listas2(
     navController: NavController,
     dataViewModel: DataViewModel = viewModel(),
     userViewModel: UserViewModel = viewModel(),
-    onRequestDelete: (ListaItems) -> Unit
+    onRequestDelete: (ListaItems) -> Unit,
+    onAddClick: () -> Unit   // <-- callback para avisar al padre que abra el diálogo
 ) {
-    //Variables
+    // Variables locales
     var id_compartir_lis by remember { mutableStateOf("") }
-    val items = dataViewModel.stateM.value //datos del viewmodel
-    val users = userViewModel.stateU.value //datos del viewmodel
+    val items = dataViewModel.stateM.value        // datos del ViewModel
+    val users = userViewModel.stateU.value         // datos del ViewModel
 
     val misListas = items.filter { it.id_user == users.user_id }
     val listasCompartidas = items.filter { users.id_compartir.any { id -> id == it.id_compartir } }
@@ -232,85 +235,113 @@ fun Listas2(
     Box(
         modifier = Modifier
             .background(colorFondo.value)
-            .shadow(
-                25.dp, RectangleShape, clip = false
-            )
+            .shadow(25.dp, RectangleShape, clip = false)
     ) {
         Column(
-            modifier = Modifier.fillMaxWidth()
-                .run { if (dialogOpen || showAlreadyOwnDialog) blur(8.dp) else this }) {
+            modifier = Modifier
+                .fillMaxWidth()
+                .run { if (dialogOpen || showAlreadyOwnDialog) blur(8.dp) else this }
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .background(
-                        colorFondo.value,
-                    )
+                    .background(colorFondo.value)
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(12.dp)
                 ) {
-                    Row() {
-                        // Barra de búsqueda
+                    // —————— BOTÓN “Crear nueva lista” ——————
+                    Button(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp),
+                        onClick = { onAddClick() },  // ahora invocamos el callback en lugar de reasignar un Boolean
+                        colors = ButtonDefaults.buttonColors(colorBoton.value),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AddCircle,
+                            contentDescription = "Crear lista",
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "Crear nueva lista",
+                            style = TextStyle(
+                                color = colorTexto.value,
+                                fontSize = 16.sp,
+                                fontWeight = Bold
+                            )
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    // —————— FILA DE BÚSQUEDA “Añadir código de lista” ——————
+                    Row {
                         OutlinedTextField(
                             value = id_compartir_lis,
                             onValueChange = { id_compartir_lis = it },
                             label = { Text("Añadir codigo de lista") },
                             modifier = Modifier
+                                .padding(start = 16.dp)
                                 .width(275.dp)
-                                .padding(start = 20.dp, end = 20.dp),
+                                .clip(RoundedCornerShape(20.dp))
+                                .border(
+                                    2.dp,
+                                    colorAlpha2.value.copy(alpha = 0.3f),
+                                    RoundedCornerShape(20.dp)
+                                )
+                                .background(colorAlpha1.value.copy(alpha = 0.3f)),
                             colors = TextFieldDefaults.textFieldColors(
-                                containerColor = Color.White
+                                containerColor = colorAlpha1.value.copy(alpha = 0.3f),
+                                unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
+                                focusedIndicatorColor = Color.Transparent
                             )
                         )
-                        IconButton(
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Button(
+                            modifier = Modifier
+                                .padding(top = 10.dp)
+                                .background(colorBoton.value, shape = RoundedCornerShape(20.dp)),
                             onClick = {
                                 val ingresado = id_compartir_lis.trim()
                                 // 1) Si está vacío, no hacemos nada
                                 if (ingresado.isBlank()) {
-                                    return@IconButton
+                                    return@Button
                                 }
                                 // 2) Extraemos todos los id_compartir de las propias
                                 val misIDcomp = misListas.map { it.id_compartir }
                                 if (ingresado in misIDcomp) {
                                     // ... ya es una lista propia: mostramos un diálogo de aviso
                                     showAlreadyOwnDialog = true
-                                    return@IconButton
+                                    return@Button
                                 }
                                 // 3) Si no era propia, añadimos al array del usuario
                                 userViewModel.agregarIdCompartir(ingresado)
                                 id_compartir_lis = ""
                             },
-                            modifier = Modifier
-                                .padding(top = 10.dp)
-                                .size(48.dp)
-                                .background(
-                                    Color.Gray, CircleShape
-                                )
-                                .neu(
-                                    lightShadowColor = gris,
-                                    darkShadowColor = blanco,
-                                    shadowElevation = elevationAny,
-                                    lightSource = LightSource.LEFT_BOTTOM,
-                                    shape = Flat(RoundedCorner(26.dp)),
-                                ),
+                            colors = ButtonDefaults.buttonColors(colorBoton.value),
+
                             interactionSource = interactionSourceAny,
                         ) {
                             Text(
-                                text = "+", color = gris, style = TextStyle(fontSize = 35.sp)
+                                text = "Añadir",
+                                color = colorTexto.value,
+                                style = TextStyle(fontSize = 18.sp)
                             )
                         }
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // —————— LISTADO DE LISTAS ——————
                     Column(
                         modifier = Modifier.fillMaxHeight(),
                         verticalArrangement = Arrangement.SpaceBetween
                     ) {
-
-                        // Muestra las listas propias o un mensaje si no hay resultados
+                        // Sección “Mis listas” y “Listas compartidas”
                         Box(
                             modifier = Modifier
                                 .weight(1f)
@@ -326,14 +357,16 @@ fun Listas2(
                                     Text(
                                         text = "Mis listas",
                                         style = MaterialTheme.typography.titleLarge,
-                                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
+                                        color = colorAlpha2.value.copy(alpha = 0.8f)
                                     )
                                 }
                                 if (misListas.isEmpty()) {
                                     item {
                                         Text(
                                             text = "No tienes listas propias",
-                                            modifier = Modifier.padding(start = 16.dp)
+                                            modifier = Modifier.padding(start = 16.dp),
+                                            color = colorAlpha2.value.copy(alpha = 0.8f)
                                         )
                                     }
                                 } else {
@@ -346,15 +379,14 @@ fun Listas2(
                                             isShared = false,
                                             onEdit = {
                                                 navController.navigate(
-                                                    Screens.InteriorLista.passId(
-                                                        lista.id_lista
-                                                    )
+                                                    Screens.InteriorLista.passId(lista.id_lista)
                                                 )
                                             },
                                             onDelete = { onRequestDelete(lista) },
                                             onToggleProduct = { producto ->
                                                 toggleProductoComprado(producto)
-                                            })
+                                            }
+                                        )
                                     }
                                 }
 
@@ -364,7 +396,8 @@ fun Listas2(
                                     Text(
                                         text = "Listas compartidas",
                                         style = MaterialTheme.typography.titleLarge,
-                                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                                        modifier = Modifier.padding(start = 16.dp, bottom = 8.dp),
+                                        color = colorAlpha2.value.copy(alpha = 0.8f)
                                     )
                                 }
                                 if (listasCompartidas.isEmpty()) {
@@ -384,15 +417,14 @@ fun Listas2(
                                             isShared = true,
                                             onEdit = {
                                                 navController.navigate(
-                                                    Screens.InteriorLista.passId(
-                                                        lista.id_lista
-                                                    )
+                                                    Screens.InteriorLista.passId(lista.id_lista)
                                                 )
                                             },
                                             onDelete = { onRequestDelete(lista) },
                                             onToggleProduct = { producto ->
                                                 toggleProductoComprado(producto)
-                                            })
+                                            }
+                                        )
                                     }
                                 }
                             }
@@ -405,7 +437,8 @@ fun Listas2(
                                         TextButton(onClick = { showAlreadyOwnDialog = false }) {
                                             Text("Aceptar")
                                         }
-                                    })
+                                    }
+                                )
                             }
                         }
                     }
@@ -434,17 +467,18 @@ fun ListCard(
     var expanded by remember { mutableStateOf(false) }
 
     val bgColor =
-        if (isShared) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.surface
+        if (isShared) colorAlpha2.value.copy(.1f) else colorAlpha1.value.copy(.3f)
 
     Surface(
         tonalElevation = 4.dp,
-        shape = RoundedCornerShape(8.dp),
+        shape = RoundedCornerShape(20.dp),
         color = bgColor,
         modifier = Modifier
-            .fillMaxWidth()
             .padding(horizontal = 16.dp)
+            .fillMaxWidth()
             .clickable { expanded = !expanded }
-            .animateContentSize()) {
+            .animateContentSize()
+    ) {
         Column(modifier = Modifier.padding(16.dp)) {
             Row(
                 verticalAlignment = Alignment.CenterVertically, modifier = Modifier.fillMaxWidth()
@@ -452,10 +486,11 @@ fun ListCard(
                 Text(
                     text = lista.nombre_lista,
                     style = MaterialTheme.typography.titleMedium,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
+                    color = colorAlpha2.value.copy(alpha = 0.8f)
                 )
                 IconButton(onClick = onEdit) {
-                    Icon(Icons.Default.Edit, contentDescription = "Editar lista")
+                    Icon(Icons.Default.Edit, contentDescription = "Editar lista", tint = colorAlpha2.value.copy(alpha = 0.8f))
                 }
                 IconButton(onClick = onDelete) {
                     Icon(
@@ -471,7 +506,8 @@ fun ListCard(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(top = 8.dp, bottom = 8.dp),
-                        fontSize = 16.sp
+                        fontSize = 16.sp,
+                        color = colorAlpha2.value.copy(alpha = 0.8f)
                     )
                 } else {
                     Column(modifier = Modifier.padding(top = 8.dp)) {
@@ -505,6 +541,7 @@ fun ProductRow(
         Text(
             text = producto.nombre_producto,
             style = MaterialTheme.typography.bodyLarge,
+            color = colorAlpha2.value.copy(alpha = 0.8f),
             textDecoration = if (checked) TextDecoration.LineThrough else TextDecoration.None
         )
     }

@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.compositeOver
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextDecoration
@@ -61,11 +62,14 @@ import com.example.proyecto_final_javig.model.DataViewModel
 import com.example.proyecto_final_javig.model.ProductosItems
 import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.blanco
+import com.example.proyecto_final_javig.ui.theme.colorAlpha1
+import com.example.proyecto_final_javig.ui.theme.colorAlpha2
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
 import com.gandiva.neumorphic.shape.Flat
 import com.gandiva.neumorphic.shape.RoundedCorner
+import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.firestore.FirebaseFirestore
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -76,6 +80,12 @@ fun InteriorLista(
     id: String,
     dataViewModel: DataViewModel = viewModel()
 ) {
+
+    val systemUiController = rememberSystemUiController()
+    systemUiController.setStatusBarColor(
+        color = colorFondo.value, darkIcons = true
+    )
+
     // 1) Obtenemos la lista y sus productos desde el ViewModel
     val allLists = dataViewModel.stateM.value
     val allProducts = dataViewModel.stateP.value
@@ -136,6 +146,7 @@ fun InteriorLista(
                 .background(
                     colorFondo.value
                 )
+                .padding(bottom = 25.dp)
 //                .padding(top = 80.dp)
         ) {
             // ─────────────────────────────────────────────────────
@@ -149,7 +160,7 @@ fun InteriorLista(
                 Text(
                     text = selectedLista.nombre_lista,
                     fontSize = 26.sp,
-                    color = gris,
+                    color = colorAlpha2.value.copy(alpha = 0.8f),
                     modifier = Modifier
                         .weight(1f)
                         .padding(top = 10.dp, start = 10.dp)
@@ -236,7 +247,7 @@ fun InteriorLista(
                     item {
                         Text(
                             text = "No hay productos en esta lista, pulsa en el botón + para añadir uno",
-                            color = Color.DarkGray,
+                            color = colorAlpha2.value.copy(alpha = 0.8f),
                             modifier = Modifier.padding(top = 20.dp)
                         )
                     }
@@ -427,10 +438,11 @@ fun ProductCardInterior(
 
     Surface(
         tonalElevation = 4.dp,
-        shape = RoundedCornerShape(8.dp),
-        color = blanco,
+        shape = RoundedCornerShape(20.dp),
+        color = colorAlpha1.value.copy(.3f),
         modifier = Modifier
             .fillMaxWidth()
+
             .clickable { /* opcional: expandir para más detalles */ }
     ) {
         Row(
@@ -450,6 +462,7 @@ fun ProductCardInterior(
             Text(
                 text = producto.nombre_producto,
                 style = MaterialTheme.typography.bodyLarge,
+                color = colorAlpha2.value.copy(alpha = 0.8f),
                 textDecoration = if (checked) TextDecoration.LineThrough else TextDecoration.None,
                 modifier = Modifier.weight(1f),
                 fontSize = 18.sp
