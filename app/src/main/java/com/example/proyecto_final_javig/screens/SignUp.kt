@@ -235,9 +235,9 @@ fun CrearCuenta(
 
             )
 
-                if (validacion && emailError != null) {
-                    Text(text = emailError!!, color = Color.Red)
-                }
+            if (validacion && emailError != null) {
+                Text(text = emailError!!, color = Color.Red)
+            }
 
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -267,7 +267,10 @@ fun CrearCuenta(
                     ) {
                         val icon =
                             if (PasswordVisible1) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                        Icon(icon, contentDescription = "Toggle password visibility")
+                        Icon(
+                            icon, contentDescription = "Toggle password visibility",
+                            tint = colorAlpha2.value.copy(0.8f),
+                        )
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -311,7 +314,11 @@ fun CrearCuenta(
                     ) {
                         val icon =
                             if (PasswordVisible2) Icons.Default.Visibility else Icons.Default.VisibilityOff
-                        Icon(icon, contentDescription = "Toggle password visibility")
+                        Icon(
+                            icon,
+                            contentDescription = "Toggle password visibility",
+                            tint = colorAlpha2.value.copy(0.8f),
+                        )
                     }
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),

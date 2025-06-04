@@ -7,6 +7,7 @@ data class User(
     val nombre: String = "",
     val apellido: String = "",
     val avatarUrl: String = "",
+    val tema: String = "",
     var id_compartir: List<String> = emptyList(),
     val admin: Boolean = false
 ){
@@ -17,6 +18,7 @@ data class User(
             "nombre" to this.nombre,
             "apellido" to this.apellido,
             "avatar_url" to this.avatarUrl,
+            "tema" to this.tema,
             "id_compartir" to this.id_compartir,
             "admin" to this.admin
         )
