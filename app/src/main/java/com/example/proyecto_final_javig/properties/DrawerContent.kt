@@ -32,7 +32,7 @@ fun DrawerContent(
 
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            text = "Mi App",
+            text = "Lista Maestra",
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)

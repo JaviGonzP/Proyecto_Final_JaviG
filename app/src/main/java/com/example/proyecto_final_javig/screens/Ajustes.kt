@@ -63,6 +63,7 @@ import androidx.navigation.NavHostController
 import com.example.proyecto_final_javig.model.UserViewModel
 import com.example.proyecto_final_javig.navigation.Screens
 import com.example.proyecto_final_javig.properties.DrawerContent
+import com.example.proyecto_final_javig.properties.SelectorDeColor
 import com.example.proyecto_final_javig.properties.TopBarCustom
 import com.example.proyecto_final_javig.ui.theme.AvatarResources
 import com.example.proyecto_final_javig.ui.theme.ColorResources
@@ -480,6 +481,7 @@ fun AjustesContent(
                                         .size(64.dp)
                                         .clip(CircleShape)
                                         .clickable {
+                                            SelectorDeColor(key)
                                             // Al tocar un tema, lo guardamos en Firestore
                                             Log.d("Ajustes", "Seleccionado tema: $key")
                                             val db = FirebaseFirestore.getInstance()

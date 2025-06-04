@@ -64,6 +64,8 @@ import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.blanco
 import com.example.proyecto_final_javig.ui.theme.colorAlpha1
 import com.example.proyecto_final_javig.ui.theme.colorAlpha2
+import com.example.proyecto_final_javig.ui.theme.colorBoton
+import com.example.proyecto_final_javig.ui.theme.colorTexto
 import com.example.proyecto_final_javig.ui.theme.gris
 import com.gandiva.neumorphic.LightSource
 import com.gandiva.neumorphic.neu
@@ -173,44 +175,34 @@ fun InteriorLista(
                     },
                     modifier = Modifier
                         .size(48.dp)
-                        .background(Color.Gray, CircleShape)
-                        .neu(
-                            lightShadowColor = gris,
-                            darkShadowColor = blanco,
-                            shadowElevation = elevationEdit,
-                            lightSource = LightSource.LEFT_BOTTOM,
-                            shape = Flat(RoundedCorner(24.dp))
-                        ),
+                        .background(colorBoton.value, CircleShape),
                     interactionSource = interactionSourceEdit
                 ) {
                     Icon(
                         imageVector = Icons.Default.Edit,
                         contentDescription = "Editar nombre",
-                        tint = gris
+                        tint = colorTexto.value
                     )
                 }
+
+                Spacer(modifier = Modifier.width(12.dp))
 
                 // Botón Compartir
                 IconButton(
                     onClick = { showShareDialog = true },
                     modifier = Modifier
                         .size(48.dp)
-                        .background(Color.Gray, CircleShape)
-                        .neu(
-                            lightShadowColor = gris,
-                            darkShadowColor = blanco,
-                            shadowElevation = elevationShare,
-                            lightSource = LightSource.LEFT_BOTTOM,
-                            shape = Flat(RoundedCorner(24.dp))
-                        ),
+                        .background(colorBoton.value, CircleShape),
                     interactionSource = interactionSourceShare
                 ) {
                     Icon(
                         imageVector = Icons.Default.Share,
                         contentDescription = "Compartir lista",
-                        tint = gris
+                        tint = colorTexto.value
                     )
                 }
+
+                Spacer(modifier = Modifier.width(12.dp))
 
                 // Botón Añadir producto
                 IconButton(
@@ -220,17 +212,10 @@ fun InteriorLista(
                     },
                     modifier = Modifier
                         .size(48.dp)
-                        .background(Color.Gray, CircleShape)
-                        .neu(
-                            lightShadowColor = gris,
-                            darkShadowColor = blanco,
-                            shadowElevation = elevationAdd,
-                            lightSource = LightSource.LEFT_BOTTOM,
-                            shape = Flat(RoundedCorner(24.dp))
-                        ),
+                        .background(colorBoton.value, CircleShape),
                     interactionSource = interactionSourceAdd
                 ) {
-                    Text(text = "+", color = gris, style = TextStyle(fontSize = 35.sp))
+                    Text(text = "+", color = colorTexto.value, style = TextStyle(fontSize = 35.sp))
                 }
             }
 
@@ -267,7 +252,10 @@ fun InteriorLista(
                                             producto.comprado = nueva
                                         }
                                         .addOnFailureListener { e ->
-                                            Log.e("InteriorLista", "Error toggling comprado: ${e.message}")
+                                            Log.e(
+                                                "InteriorLista",
+                                                "Error toggling comprado: ${e.message}"
+                                            )
                                         }
                                 }
                             },
@@ -313,7 +301,10 @@ fun InteriorLista(
                                             showEditNameDialog = false
                                         }
                                         .addOnFailureListener { e ->
-                                            Log.e("InteriorLista", "Error actualizando nombre: ${e.message}")
+                                            Log.e(
+                                                "InteriorLista",
+                                                "Error actualizando nombre: ${e.message}"
+                                            )
                                         }
                                 }
                             }
