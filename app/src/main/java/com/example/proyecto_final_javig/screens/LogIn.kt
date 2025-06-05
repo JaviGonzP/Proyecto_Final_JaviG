@@ -20,7 +20,7 @@ import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.*
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -43,7 +43,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontWeight.Companion.Bold
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -55,19 +54,11 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.proyecto_final_javig.model.LoginScreenViewModel
 import com.example.proyecto_final_javig.navigation.Screens
-import com.example.proyecto_final_javig.ui.theme.blanco
 import com.example.proyecto_final_javig.ui.theme.colorAlpha1
 import com.example.proyecto_final_javig.ui.theme.colorAlpha2
-import com.example.proyecto_final_javig.ui.theme.colorBorde
 import com.example.proyecto_final_javig.ui.theme.colorBoton
 import com.example.proyecto_final_javig.ui.theme.colorFondo
-import com.example.proyecto_final_javig.ui.theme.colorListaPrincipal
 import com.example.proyecto_final_javig.ui.theme.colorTexto
-import com.example.proyecto_final_javig.ui.theme.gris
-import com.gandiva.neumorphic.LightSource
-import com.gandiva.neumorphic.neu
-import com.gandiva.neumorphic.shape.Flat
-import com.gandiva.neumorphic.shape.RoundedCorner
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 
 @Composable
@@ -136,7 +127,6 @@ fun IniSesion(
         Column(
             modifier = Modifier
                 .weight(1f),
-//                .padding(top = 20.dp),
             verticalArrangement = Arrangement.Center
         ) {
             Text(

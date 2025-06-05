@@ -1,6 +1,5 @@
 package com.example.proyecto_final_javig.properties
 
-import androidx.compose.material.Switch
 import com.example.proyecto_final_javig.ui.theme.boton_coral
 import com.example.proyecto_final_javig.ui.theme.boton_default
 import com.example.proyecto_final_javig.ui.theme.boton_verde
@@ -30,5 +29,4 @@ fun SelectorDeColor(key: String) {
             colorBoton.value = boton_default
         }
     }
-
 }

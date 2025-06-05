@@ -68,16 +68,11 @@ import com.example.proyecto_final_javig.properties.SelectorDeColor
 import com.example.proyecto_final_javig.properties.TopBarCustom
 import com.example.proyecto_final_javig.ui.theme.AvatarResources
 import com.example.proyecto_final_javig.ui.theme.ColorResources
-import com.example.proyecto_final_javig.ui.theme.blanco
 import com.example.proyecto_final_javig.ui.theme.colorAlpha1
 import com.example.proyecto_final_javig.ui.theme.colorAlpha2
 import com.example.proyecto_final_javig.ui.theme.colorBoton
 import com.example.proyecto_final_javig.ui.theme.colorFondo
 import com.example.proyecto_final_javig.ui.theme.colorTexto
-import com.example.proyecto_final_javig.ui.theme.gris
-import com.gandiva.neumorphic.LightSource
-import com.gandiva.neumorphic.neu
-import com.gandiva.neumorphic.shape.RoundedCorner
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

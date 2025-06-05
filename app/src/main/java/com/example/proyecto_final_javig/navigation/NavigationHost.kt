@@ -3,10 +3,7 @@ package com.example.proyecto_final_javig.navigation
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -15,10 +12,8 @@ import androidx.navigation.navArgument
 import com.example.proyecto_final_javig.properties.NavDrawer
 import com.example.proyecto_final_javig.screens.Admin
 import com.example.proyecto_final_javig.screens.Ajustes
-import com.example.proyecto_final_javig.screens.Contacto
 import com.example.proyecto_final_javig.screens.InteriorLista
 import com.example.proyecto_final_javig.screens.LogIn
-import com.example.proyecto_final_javig.screens.MapsScreen
 import com.example.proyecto_final_javig.screens.Principal
 import com.example.proyecto_final_javig.screens.Scanner
 import com.example.proyecto_final_javig.screens.SignUp
@@ -76,14 +71,9 @@ fun ScreenNavHost(navController: NavHostController) {
         composable(Screens.SignUp.route) {
             SignUp(navController)
         }
-        composable(Screens.Contacto.route) {
-            Contacto(navController)
-        }
+
         composable(Screens.Scanner.route) {
             Scanner(navController)
-        }
-        composable(Screens.Mapa.route) {
-            MapsScreen(navController = navController)
         }
 
         composable(
