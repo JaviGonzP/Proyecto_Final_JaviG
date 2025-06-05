@@ -295,6 +295,7 @@ fun Listas2(
                                 )
                                 .background(colorAlpha1.value.copy(alpha = 0.3f)),
                             colors = TextFieldDefaults.textFieldColors(
+                                textColor = colorAlpha2.value.copy(alpha = 0.8f),
                                 containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                                 unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                                 focusedIndicatorColor = Color.Transparent
@@ -624,7 +625,8 @@ fun AddListDialog(
             OutlinedTextField(
                 value = listName,
                 onValueChange = { listName = it },
-                label = { Text("Ingrese el nombre de la lista") })
+                label = { Text("Ingrese el nombre de la lista")}
+            )
         })
 }
 

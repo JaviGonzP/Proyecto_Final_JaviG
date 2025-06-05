@@ -283,6 +283,7 @@ fun InteriorLista(
                     label = { Text("Nuevo nombre") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
+                        textColor = colorAlpha2.value.copy(alpha = 0.8f),
                         containerColor = Color.White
                     )
                 )
@@ -337,6 +338,7 @@ fun InteriorLista(
                     label = { Text("Nombre del producto") },
                     modifier = Modifier.fillMaxWidth(),
                     colors = androidx.compose.material3.TextFieldDefaults.textFieldColors(
+                        textColor = colorAlpha2.value.copy(alpha = 0.8f),
                         containerColor = Color.White
                     )
                 )

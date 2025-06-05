@@ -165,6 +165,7 @@ fun CrearCuenta(
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent
@@ -192,6 +193,7 @@ fun CrearCuenta(
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent
@@ -228,6 +230,7 @@ fun CrearCuenta(
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent
@@ -281,6 +284,7 @@ fun CrearCuenta(
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent
@@ -329,6 +333,7 @@ fun CrearCuenta(
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent

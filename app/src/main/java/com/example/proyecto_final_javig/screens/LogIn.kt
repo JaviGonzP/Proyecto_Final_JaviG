@@ -176,13 +176,13 @@ fun IniSesion(
             TextField(
                 value = username.value,
                 onValueChange = { username.value = it },
-                placeholder = { "mail@example.com" },
                 modifier = Modifier
                     .fillMaxWidth(.65f)
                     .clip(RoundedCornerShape(20.dp))
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent
@@ -214,13 +214,13 @@ fun IniSesion(
                         Icon(icon, contentDescription = "Toggle password visibility")
                     }
                 },
-                placeholder = { "mail@example.com" },
                 modifier = Modifier
                     .fillMaxWidth(.65f)
                     .clip(RoundedCornerShape(20.dp))
                     .border(2.dp, colorAlpha2.value.copy(alpha = 0.3f), RoundedCornerShape(20.dp))
                     .background(colorAlpha1.value.copy(alpha = 0.3f)),
                 colors = TextFieldDefaults.textFieldColors(
+                    textColor = colorAlpha2.value.copy(alpha = 0.8f),
                     containerColor = colorAlpha1.value.copy(alpha = 0.3f),
                     unfocusedIndicatorColor = Color.Transparent, // Removes blue underline
                     focusedIndicatorColor = Color.Transparent
